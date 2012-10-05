@@ -1,0 +1,65 @@
+<head>
+	<style type="text/css">
+	
+	</style>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#list-btn").click(function() {
+			$("#titletext").val()
+			$.ajax({
+				type: "GET",
+				contentType: "application/json",
+				url: "/books.json",
+				success: function(books_json) {
+					books = JSON.parse(books_json)
+					for(var i in books) {
+						book = books[i]
+						console.log(book)
+						$("#response").html($("#response").html() + book.title + "\n")
+					}
+				}
+			})
+		})
+		
+		$("#create-btn").click(function() {
+			var titletext = $("#titletext").val()
+			var authortext = $("#authortext").val()
+			var publishertext = $("#publishertext").val()
+			console.log(titletext)
+			console.log(authortext)
+			console.log(publishertext)
+			$.ajax({
+				type: "POST",
+				url: "/books.json",
+				data: {
+					book:JSON.stringify({
+						title: titletext,
+						author: authortext,
+						publisher: publishertext
+					})
+				},
+				success: function() {
+					console.log("Success")
+				}
+			})
+		})
+	})
+	</script>
+</head>
+<body>
+	<div id="content-toolbar">
+		Book Manager
+	</div>
+	<div id="content-body">
+		<input type="text" placeholder="Book title" id="titletext">
+		<input type="text" placeholder="Book author" id="authortext">
+		<input type="text" placeholder="Book publisher" id="publishertext">
+		<button type="btn" id="create-btn">Add book</button>
+		<button type="btn" id="list-btn">List books</button>
+	</div>
+	<div id="response">
+		asdf
+	</div>
+</body>
