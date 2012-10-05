@@ -2,15 +2,17 @@ require 'sinatra'
 require 'data_mapper'
 require 'json'
 
-DataMapper::setup(:default, "postgres://root:password@localhost/database.db")
+DataMapper::setup(:default, "postgres://root:password@localhost/testdb.db")
 
 class Book
   include DataMapper::Resource
   property :id, Serial
   property :title, Text, :required => true
   property :publisher, Text, :required => true
-  has n, :authorships
+  has n, :authorships, :constraint => :destroy
   has n, :authors, :through => :authorships
+  has n, :checkouts, :constraint => :destroy
+  has 1, :customer, :through => :checkouts
 end
 
 class Authorship
@@ -23,7 +25,7 @@ class Author
   include DataMapper::Resource
   property :id, Serial
   property :name, Text, :required => true
-  has n, :authorships
+  has n, :authorships, :constraint => :destroy
   has n, :books, :through => :authorships
 end
 
@@ -33,17 +35,21 @@ class Customer
   property :firstname, Text
   property :lastname, Text
   property :registration, Date, :required => true
+  has n, :checkouts, :constraint => :destroy
+  has n :books, :through => :checkouts
 end
 
 class Checkout
   include DataMapper::Resource
   property :id, Serial
-  property :checkoutd, Date
-  property :purchased, Date
-  property :returnd, Date
-  property :reservedd, Date
-  property :book_id, Integer, :required => true
-  property :cust_id, Integer, :required => true
+  property :checkoutdate, Date
+  property :purchasedate, Date
+  property :returndate, Date
+  property :reserveddate, Date
+  property :returned, Boolean
+  property :current, Boolean
+  belongs_to :book, :key => true
+  belongs_to :cust, :key => true
 end
 
 DataMapper.finalize.auto_upgrade!
@@ -98,8 +104,12 @@ get '/books.json' do
   books = Book.all
   data = []
   for book in books do
+    puts book.inspect
     author = book.authors
-    data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", author[0].name]
+    puts author.inspect
+    for element in author
+      data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name]
+    end
   end
   puts data.inspect
   #  books = books.to_json
@@ -122,8 +132,16 @@ put '/book/:id.json' do
 end
 
 delete '/book/:id.json' do
-  
-  if Book.get(params["id"])
+  book = Book.get(params["id"])
+  puts book.title
+  author = book.authors
+  if book
+    for element in author do
+      link = Authorship.get(book.id, element.id)
+      if link
+        link.destroy
+      end
+    end
     book.destroy
   else
     [500, {"error" => "There was an error!"}]
