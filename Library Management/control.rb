@@ -2,36 +2,46 @@ require 'sinatra'
 require 'data_mapper'
 require 'json'
 
-DataMapper::setup(:default, "postgres://user:password@localhost/database.db")
+DataMapper::setup(:default, "postgres://root:password@localhost/database.db")
 
 class Book
   include DataMapper::Resource
   property :id, Serial
   property :title, Text, :required => true
   property :publisher, Text, :required => true
-  has n, :author
+  has n, :authorships
+  has n, :authors, :through => :authorships
+end
+
+class Authorship
+  include DataMapper::Resource
+  belongs_to :author, :key => true
+  belongs_to :book, :key => true
 end
 
 class Author
   include DataMapper::Resource
   property :id, Serial
-  property :firstname, Text, :required => false
-  property :lastname, Text, :required => true
-  belongs_to :book
+  property :name, Text, :required => true
+  has n, :authorships
+  has n, :books, :through => :authorships
 end
 
 class Customer
   include DataMapper::Resource
   property :id, Serial
-  property :name, Text, :required => true
+  property :firstname, Text
+  property :lastname, Text
   property :registration, Date, :required => true
 end
 
 class Checkout
   include DataMapper::Resource
   property :id, Serial
-  property :issued, Date, :required => true
-  property :return, Date, :required => true
+  property :checkoutd, Date
+  property :purchased, Date
+  property :returnd, Date
+  property :reservedd, Date
   property :book_id, Integer, :required => true
   property :cust_id, Integer, :required => true
 end
@@ -60,15 +70,24 @@ end
 # Destroy   - DELETE
 
 post '/books.json' do
-  puts "blah"
-  @book = Book.new
-  @newbook = JSON.parse(params["book"])
-  @book.title = @newbook["title"]
-  @book.author = @newbook["author"]
-  @book.publisher = @newbook["publisher"]
-  puts "blah"
-  if @book.save
-    return @book.to_json
+  book = Book.new
+  author = Author.new
+  
+  info = JSON.parse(params["book"])
+  
+  book.title = info["title"]
+  book.publisher = info["publisher"]
+  
+  author.name = info["author"]
+  
+  author.books << book
+  book.authors << author
+  
+  authorship = Authorship.new
+  authorship.book = book
+  authorship.author = author
+  if authorship.save && book.save && author.save
+    return book.to_json
   else
     [500, {"error" => "There was an error!"}.to_json]
   end
@@ -76,8 +95,9 @@ end
 
 get '/books.json' do
   puts "Arr, Matey!"
-  @books = Book.all
-  @books = @books.to_json
+  books = Book.all
+  puts books.inspect
+  books = books.to_json
 end
 
 get '/book/:id.json' do
