@@ -72,17 +72,17 @@ end
 post '/books.json' do
   book = Book.new
   author = Author.new
-  
+
   info = JSON.parse(params["book"])
-  
+
   book.title = info["title"]
   book.publisher = info["publisher"]
-  
+
   author.name = info["author"]
-  
+
   author.books << book
   book.authors << author
-  
+
   authorship = Authorship.new
   authorship.book = book
   authorship.author = author
@@ -96,20 +96,38 @@ end
 get '/books.json' do
   puts "Arr, Matey!"
   books = Book.all
-  puts books.inspect
-  books = books.to_json
+  data = []
+  for book in books do
+    author = book.authors
+    data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", author[0].name]
+  end
+  puts data.inspect
+  #  books = books.to_json
+  data = data.to_json
 end
 
 get '/book/:id.json' do
-  
+
 end
 
 put '/book/:id.json' do
-  
+  book = Book.get(params["id"])
+  puts book.inspect
+  book.title = params["newcontent"]
+  if book.save
+    return book.to_json
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
 
 delete '/book/:id.json' do
   
+  if Book.get(params["id"])
+    book.destroy
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
 
 # Resource - customers
@@ -135,15 +153,15 @@ get '/customers.json' do
 end
 
 get '/customer/:id.json' do
-  
+
 end
 
 put '/customer/:id.json' do
-  
+
 end
 
 delete '/customer/:id.json' do
-  
+
 end
 
 # Resource - checkouts
@@ -169,15 +187,15 @@ get '/checkout.json' do
 end
 
 get '/checkout/:id.json' do
-  
+
 end
 
 put '/checkout/:id.json' do
-  
+
 end
 
 delete '/checkout/:id.json' do
-  
+
 end
 
 

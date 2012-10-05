@@ -6,30 +6,56 @@
 	<script type="text/javascript">
 	$(document).ready(function() {
 
-		$("#list-btn").click(function() {
-			$("#titletext").val()
+		function updateTable() {
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
 				url: "/books.json",
 				success: function(books_json) {
+					$("tr.removable").remove();
 					books = JSON.parse(books_json)
 					for(var i in books) {
 						book = books[i]
 						console.log(book)
-						$("#response").html($("#response").html() + book.title + "\n")
+						var node = $("<td></td>")
+						var editbutton = $("<button></button>")
+						editbutton.addClass("edit-button btn btn-warning")
+						editbutton.append("<i class='icon-pencil'></i>")
+						$(editbutton).data("book-id", book.id)
+						attach_events_for_edit_button($(editbutton))
+						var deletebutton = $("<button></button>")
+						deletebutton.addClass("delete-button btn btn-danger")
+						deletebutton.append("<i class='icon-remove'></i>")
+						$(deletebutton).data("book-id", book.id)
+						attach_events_for_delete_button($(deletebutton))
+						node.append(editbutton)
+						node.append(deletebutton)
+
+						if(i%2 == 0) {
+							$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+							$('#book-table tr:last').append(node)
+						}
+						else {
+							$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+							$('#book-table tr:last').append(node)
+						}
 					}
 				}
 			})
-		})
+		}
+
+		updateTable()
+
 
 		$("#create-btn").click(function() {
 			var titletext = $("#titletext").val()
 			var authortext = $("#authortext").val()
 			var publishertext = $("#publishertext").val()
-			console.log(titletext)
-			console.log(authortext)
-			console.log(publishertext)
+
+			$("#titletext").val("")
+			$("#authortext").val("")
+			$("#publishertext").val("")
+
 			$.ajax({
 				type: "POST",
 				url: "/books.json",
@@ -41,11 +67,49 @@
 					})
 				},
 				success: function() {
-					console.log("Success")
+					updateTable()
 				}
 			})
 		})
+
+		function attach_events_for_edit_button(node) {
+			$(node).click(function() {
+				var content = prompt("What is the book's title?", "")
+				$.ajax({
+					type: "PUT",
+					url: "/book/" + $(node).data("book-id") +".json",
+					data: {
+						newcontent: content
+					},
+					success: function() {
+						updateTable()
+					},
+					error: function() {
+					}
+				})
+			})
+		}
+
+		function attach_events_for_delete_button(node) {
+			$(node).click(function() {
+				var conf = confirm("Are you sure you wish to delete this todo?")
+				if(conf == true) {
+					$.ajax({
+						type: "DELETE",
+						url: "/book/" + $(node).data("book-id") +".json",
+						success: function() {
+							updateTable()
+						},
+						error: function() {
+						}
+					})
+				}
+			})
+		}
+
+
 	})
+
 	</script>
 </head>
 <body>
@@ -58,10 +122,13 @@
 		<input type="text" placeholder="Book publisher" id="publishertext">
 		<button type="btn" id="create-btn">Add book</button>
 		<div id="book-list">
-			<table border="1">
-				<th>Title</th>
-				<th>Author</th>
-				<th>Publisher</th>
+			<table id="book-table" border="1">
+				<tr class="save">
+					<th>Title</th>
+					<th>Author</th>
+					<th>Publisher</th>
+					<th>Edit/Delete</th>
+				</tr>
 			</table>
 		</div>
 	</div>
