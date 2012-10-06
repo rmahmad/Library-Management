@@ -6,6 +6,38 @@
 	<script type="text/javascript">
 	$(document).ready(function() {
 
+		function buttonNode(node) {
+			var editbutton = $("<button></button>")
+			editbutton.addClass("edit-button btn btn-warning")
+			editbutton.append("<i class='icon-pencil'></i>")
+			$(editbutton).data("book-id", book.id)
+			attach_events_for_edit_button($(editbutton))
+			var deletebutton = $("<button></button>")
+			deletebutton.addClass("delete-button btn btn-danger")
+			deletebutton.append("<i class='icon-remove'></i>")
+			$(deletebutton).data("book-id", book.id)
+			attach_events_for_delete_button($(deletebutton))
+			var checkoutbutton = $("<button></button>")
+			checkoutbutton.addClass("completed-button btn btn-success")
+			checkoutbutton.append("<i class='icon-ok'></i>")
+			$(checkoutbutton).data("book-id", book.id)
+			attach_events_for_checkout_button($(checkoutbutton))
+			node.append(checkoutbutton)
+			node.append(editbutton)
+			node.append(deletebutton)
+		}
+		
+		getCheckoutInfo(book) {
+			$.ajax({
+				type: "GET",
+				contentType: "application/json",
+				url: "/checkout/book/" + book.id + ".json",
+				success: function(checkout_json) {
+					
+				}
+			})
+		}
+		
 		function updateTable() {
 			$.ajax({
 				type: "GET",
@@ -14,31 +46,31 @@
 				success: function(books_json) {
 					$("tr.removable").remove();
 					books = JSON.parse(books_json)
+					checkoutbooks = []
 					for(var i in books) {
 						book = books[i]
-						console.log(book)
-						var node = $("<td></td>")
-						var editbutton = $("<button></button>")
-						editbutton.addClass("edit-button btn btn-warning")
-						editbutton.append("<i class='icon-pencil'></i>")
-						$(editbutton).data("book-id", book.id)
-						attach_events_for_edit_button($(editbutton))
-						var deletebutton = $("<button></button>")
-						deletebutton.addClass("delete-button btn btn-danger")
-						deletebutton.append("<i class='icon-remove'></i>")
-						$(deletebutton).data("book-id", book.id)
-						attach_events_for_delete_button($(deletebutton))
-						node.append(editbutton)
-						node.append(deletebutton)
-
-						if(i%2 == 0) {
-							$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
-							$('#book-table tr:last').append(node)
+						if(book.checkout) {
+							var node = $("<td></td>")
+							buttonNode(node)
+							if(i%2 == 0) {
+								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table tr:last').append(node)
+							}
+							else {
+								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table tr:last').append(node)
+							}
 						}
 						else {
-							$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
-							$('#book-table tr:last').append(node)
+							checkoutbooks.push(book)
 						}
+					}
+					
+					for(var i in checkoutbooks) {
+						book = checkoutbooks[i]
+						var checkoutData
+						getCheckoutInfo(book, checkoutData)
+						$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n<td>" +  + "</td>\n</tr>")
 					}
 				}
 			})
@@ -92,7 +124,7 @@
 
 		function attach_events_for_delete_button(node) {
 			$(node).click(function() {
-				var conf = confirm("Are you sure you wish to delete this todo?")
+				var conf = confirm("Are you sure you wish to delete this book?")
 				if(conf == true) {
 					$.ajax({
 						type: "DELETE",
@@ -104,6 +136,25 @@
 						}
 					})
 				}
+			})
+		}
+
+		function attach_events_for_checkout_button(node) {
+			$(node).click(function() {
+				var cust_id = prompt("Enter the id of the customer checking out")
+				$.ajax({
+					type: "POST",
+					url: "/checkout.json",
+					data: {
+						checkout:JSON.stringify({
+							book_id: $(node).data("book-id"),
+							cust_id: cust_id
+						})
+					},
+					success: function() {
+						updateTable()
+					}
+				})
 			})
 		}
 
@@ -122,12 +173,24 @@
 		<input type="text" placeholder="Book publisher" id="publishertext">
 		<button type="btn" id="create-btn">Add book</button>
 		<div id="book-list">
+			Available books
 			<table id="book-table" border="1">
 				<tr class="save">
 					<th>Title</th>
 					<th>Author</th>
 					<th>Publisher</th>
 					<th>Edit/Delete</th>
+				</tr>
+			</table>
+			
+			<br />Checked out books
+			<table id="checkout-book-table" border="1">
+				<tr class="save">
+					<th>Title</th>
+					<th>Author</th>
+					<th>Publisher</th>
+					<th>Checked out by</th>
+					<th>Return date</th>
 				</tr>
 			</table>
 		</div>

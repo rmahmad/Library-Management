@@ -2,7 +2,7 @@ require 'sinatra'
 require 'data_mapper'
 require 'json'
 
-DataMapper::setup(:default, "postgres://root:password@localhost/testdb.db")
+DataMapper::setup(:default, "postgres://root:password@localhost/database.db")
 
 class Book
   include DataMapper::Resource
@@ -29,14 +29,14 @@ class Author
   has n, :books, :through => :authorships
 end
 
-class Customer
+class Customer 
   include DataMapper::Resource
   property :id, Serial
   property :firstname, Text
   property :lastname, Text
   property :registration, Date, :required => true
   has n, :checkouts, :constraint => :destroy
-  has n :books, :through => :checkouts
+  has n, :books, :through => :checkouts
 end
 
 class Checkout
@@ -49,7 +49,7 @@ class Checkout
   property :returned, Boolean
   property :current, Boolean
   belongs_to :book, :key => true
-  belongs_to :cust, :key => true
+  belongs_to :customer, :key => true
 end
 
 DataMapper.finalize.auto_upgrade!
@@ -108,7 +108,11 @@ get '/books.json' do
     author = book.authors
     puts author.inspect
     for element in author
-      data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name]
+      if book.customer
+        data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", true]
+      else
+        data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", false]
+      end
     end
   end
   puts data.inspect
@@ -133,15 +137,7 @@ end
 
 delete '/book/:id.json' do
   book = Book.get(params["id"])
-  puts book.title
-  author = book.authors
   if book
-    for element in author do
-      link = Authorship.get(book.id, element.id)
-      if link
-        link.destroy
-      end
-    end
     book.destroy
   else
     [500, {"error" => "There was an error!"}]
@@ -158,16 +154,26 @@ end
 # Destroy   - DELETE
 
 post '/customers.json' do
-  @customer = Customer.new
-  @newcust = JSON.parse(params["customer"])
-  @customer.title = @newcust["title"]
-  @customer.author = @newcust["author"]
-  @customer.publisher = @newcust["publisher"]
+  customer = Customer.new
+  newcust = JSON.parse(params["customer"])
+  customer.firstname = newcust["firstname"]
+  customer.lastname = newcust["lastname"]
+  time = Time.now
+  customer.registration = "#{time.year}-#{time.month}-#{time.day}"
+  if customer.save
+    return customer.to_json
+  else
+    [500, {"error" => "There was an error!"}.to_json]
+  end
+  
 end
 
 get '/customers.json' do
-  @customers = Customer.all
-  @customers = @customers.to_json
+  customers = Customer.all
+  for customer in customers do
+    puts customer.inspect
+  end
+  customers = customers.to_json
 end
 
 get '/customer/:id.json' do
@@ -175,11 +181,22 @@ get '/customer/:id.json' do
 end
 
 put '/customer/:id.json' do
-
+  customer = Customer.get(params["id"])
+  customer.lastname = params["newcontent"]
+  if customer.save
+    return customer.to_json
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
 
 delete '/customer/:id.json' do
-
+  customer = Customer.get(params["id"])
+  if customer
+    customer.destroy
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
 
 # Resource - checkouts
@@ -192,11 +209,20 @@ end
 # Destroy   - DELETE
 
 post '/checkout.json' do
-  @checkout = Checkout.new
-  @newcheckout = JSON.parse(params["checkout"])
-  @checkout.title = @newcheckout["title"]
-  @checkout.author = @newcheckout["author"]
-  @checkout.publisher = @newcheckout["publisher"]
+  checkout = Checkout.new
+  newcheckout = JSON.parse(params["checkout"])
+  book = Book.get(newcheckout["book_id"])
+  cust = Customer.get(newcheckout["cust_id"])
+  checkout.book = book
+  checkout.customer = cust
+  checkout.current = true
+  checkout.returned = false
+  time = Time.now
+  checkout.checkoutdate = "#{time.year}-#{time.month}-#{time.day}"
+  time = time + 14
+  checkout.returndate = "#{time.year}-#{time.month}-#{time.day}"
+  book.customer = cust
+  cust.books << book
 end
 
 get '/checkout.json' do
@@ -204,9 +230,19 @@ get '/checkout.json' do
   @checkouts = @checkouts.to_json
 end
 
-get '/checkout/:id.json' do
-
+get '/checkout/book/:id.json' do
+  book = Book.get(params["id"])
+  cust = book.customer
+  if book
+    for element in book.authors
+      data << Hash["book_id", book.id, "cust_id", cust.id, "publisher", book.publisher, "author", element.name, "title", book.title]
+    end
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
+
+get '/checkout/customer/:id.json'
 
 put '/checkout/:id.json' do
 

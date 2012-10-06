@@ -10,34 +10,35 @@
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
-				url: "/books.json",
-				success: function(books_json) {
+				url: "/customers.json",
+				success: function(custs_json) {
+					console.log(custs_json)
 					$("tr.removable").remove();
-					books = JSON.parse(books_json)
-					for(var i in books) {
-						book = books[i]
-						console.log(book)
+					customers = JSON.parse(custs_json)
+					for(var i in customers) {
+						cust = customers[i]
+						console.log(cust)
 						var node = $("<td></td>")
 						var editbutton = $("<button></button>")
 						editbutton.addClass("edit-button btn btn-warning")
 						editbutton.append("<i class='icon-pencil'></i>")
-						$(editbutton).data("book-id", book.id)
+						$(editbutton).data("cust-id", cust.id)
 						attach_events_for_edit_button($(editbutton))
 						var deletebutton = $("<button></button>")
 						deletebutton.addClass("delete-button btn btn-danger")
 						deletebutton.append("<i class='icon-remove'></i>")
-						$(deletebutton).data("book-id", book.id)
+						$(deletebutton).data("cust-id", cust.id)
 						attach_events_for_delete_button($(deletebutton))
 						node.append(editbutton)
 						node.append(deletebutton)
 
 						if(i%2 == 0) {
-							$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
-							$('#book-table tr:last').append(node)
+							$('#cust-table').append("<tr class=\"removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+							$('#cust-table tr:last').append(node)
 						}
 						else {
-							$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
-							$('#book-table tr:last').append(node)
+							$('#cust-table').append("<tr class=\"alt removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+							$('#cust-table tr:last').append(node)
 						}
 					}
 				}
@@ -48,22 +49,19 @@
 
 
 		$("#create-btn").click(function() {
-			var titletext = $("#titletext").val()
-			var authortext = $("#authortext").val()
-			var publishertext = $("#publishertext").val()
+			var firstname = $("#firstnametext").val()
+			var lastname = $("#lastnametext").val()
 
 			$("#titletext").val("")
 			$("#authortext").val("")
-			$("#publishertext").val("")
 
 			$.ajax({
 				type: "POST",
-				url: "/books.json",
+				url: "/customers.json",
 				data: {
-					book:JSON.stringify({
-						title: titletext,
-						author: authortext,
-						publisher: publishertext
+					customer:JSON.stringify({
+						firstname: firstname,
+						lastname: lastname
 					})
 				},
 				success: function() {
@@ -74,10 +72,10 @@
 
 		function attach_events_for_edit_button(node) {
 			$(node).click(function() {
-				var content = prompt("What is the book's title?", "")
+				var content = prompt("What is the customer's last name?", "")
 				$.ajax({
 					type: "PUT",
-					url: "/book/" + $(node).data("book-id") +".json",
+					url: "/customer/" + $(node).data("cust-id") +".json",
 					data: {
 						newcontent: content
 					},
@@ -92,11 +90,11 @@
 
 		function attach_events_for_delete_button(node) {
 			$(node).click(function() {
-				var conf = confirm("Are you sure you wish to delete this todo?")
+				var conf = confirm("Are you sure you wish to delete this customer?")
 				if(conf == true) {
 					$.ajax({
 						type: "DELETE",
-						url: "/book/" + $(node).data("book-id") +".json",
+						url: "/customer/" + $(node).data("cust-id") +".json",
 						success: function() {
 							updateTable()
 						},
@@ -120,14 +118,14 @@
 		<input type="text" placeholder="First name" id="firstnametext">
 		<input type="text" placeholder="Last name" id="lastnametext">
 		<button type="btn" id="create-btn">Add customer</button>
-		<div id="book-list">
-			<table id="book-table" border="1">
+		<div id="cust-list">
+			<table id="cust-table" border="1">
 				<tr class="save">
 					<th>Customer ID</th>
 					<th>First Name</th>
 					<th>Last Name</th>
 					<th>Registration Date</th>
-					<th>Current Checked Out Books</th>
+					<th>Edit/Delete</th>
 				</tr>
 			</table>
 		</div>
