@@ -211,6 +211,7 @@ end
 post '/checkout.json' do
   checkout = Checkout.new
   newcheckout = JSON.parse(params["checkout"])
+  puts "newcheckout #{newcheckout.inspect}"
   book = Book.get(newcheckout["book_id"])
   cust = Customer.get(newcheckout["cust_id"])
   checkout.book = book
@@ -223,6 +224,11 @@ post '/checkout.json' do
   checkout.returndate = "#{time.year}-#{time.month}-#{time.day}"
   book.customer = cust
   cust.books << book
+  if checkout.save
+    return checkout.to_json
+  else
+    [500, {"error" => "There was an error!"}]
+  end
 end
 
 get '/checkout.json' do
@@ -233,16 +239,23 @@ end
 get '/checkout/book/:id.json' do
   book = Book.get(params["id"])
   cust = book.customer
+  data = []
+  checkout = Checkout.all(:book => book) & Checkout.all(:customer => cust) & Checkout.all(:current => true)
+  puts checkout.inspect
+  puts cust.inspect
+  puts book.inspect
   if book
-    for element in book.authors
-      data << Hash["book_id", book.id, "cust_id", cust.id, "publisher", book.publisher, "author", element.name, "title", book.title]
-    end
+      data << Hash["book_title", book.title, "cust_name", "#{cust.firstname} #{cust.lastname}", "publisher", book.publisher, "author", book.authors, "return_date", checkout[0].returndate]
+      puts data.inspect
   else
     [500, {"error" => "There was an error!"}]
   end
+  data = data.to_json
 end
 
-get '/checkout/customer/:id.json'
+get '/checkout/customer/:id.json' do
+  
+end
 
 put '/checkout/:id.json' do
 

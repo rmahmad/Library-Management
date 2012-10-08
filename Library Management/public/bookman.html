@@ -6,7 +6,7 @@
 	<script type="text/javascript">
 	$(document).ready(function() {
 
-		function buttonNode(node) {
+		function buttonNode(node, book) {
 			var editbutton = $("<button></button>")
 			editbutton.addClass("edit-button btn btn-warning")
 			editbutton.append("<i class='icon-pencil'></i>")
@@ -26,32 +26,37 @@
 			node.append(editbutton)
 			node.append(deletebutton)
 		}
-		
-		getCheckoutInfo(book) {
+
+		function getCheckoutInfo(book, checkoutData) {
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
 				url: "/checkout/book/" + book.id + ".json",
 				success: function(checkout_json) {
-					
+					checkout = JSON.parse(checkout_json)
+					checkoutData["book_title"] = checkout[0].book_title
+					checkoutData["cust_name"] = checkout[0].cust_name
+					checkoutData["publisher"] = checkout[0].publisher
+					checkoutData["author"] = checkout[0].author
+					checkoutData["return_date"] = checkout[0].return_date
 				}
 			})
 		}
-		
+
 		function updateTable() {
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
 				url: "/books.json",
 				success: function(books_json) {
-					$("tr.removable").remove();
+					$("tr.removable").remove()
 					books = JSON.parse(books_json)
 					checkoutbooks = []
 					for(var i in books) {
 						book = books[i]
-						if(book.checkout) {
+						if(!book.checkout) {
 							var node = $("<td></td>")
-							buttonNode(node)
+							buttonNode(node, book)
 							if(i%2 == 0) {
 								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
@@ -63,14 +68,19 @@
 						}
 						else {
 							checkoutbooks.push(book)
+							console.log(checkoutbooks)
 						}
 					}
-					
+
 					for(var i in checkoutbooks) {
 						book = checkoutbooks[i]
-						var checkoutData
+						console.log(book.id)
+						var checkoutData = {}
 						getCheckoutInfo(book, checkoutData)
-						$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n<td>" +  + "</td>\n</tr>")
+						console.log("checkout")
+						console.log(checkoutData)
+						console.log(checkoutData.book_title)
+						$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
 					}
 				}
 			})
@@ -182,7 +192,7 @@
 					<th>Edit/Delete</th>
 				</tr>
 			</table>
-			
+
 			<br />Checked out books
 			<table id="checkout-book-table" border="1">
 				<tr class="save">
