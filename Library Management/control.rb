@@ -54,18 +54,6 @@ end
 
 DataMapper.finalize.auto_upgrade!
 
-prefix = ""
-
-Dir.foreach(File.join(File.dirname(__FILE__))) do |f|
-  full_path = File.join(File.dirname(__FILE__), f)
-  unless [".", "..", "index.html", "login.html"].include? f then
-    route = prefix + "/" + f
-    get route do
-      send_file full_path
-    end
-  end
-end
-
 # Resource - books
 
 # Format:   - json

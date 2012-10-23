@@ -1,0 +1,5 @@
+config file for control line 5
+underscores instead of multiplewords
+stylesheet, js, images files
+.gitignore, git remove first
+layout, yield
