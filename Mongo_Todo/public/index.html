@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>		
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+	<style type="text/css">
+	#header {
+		background-image: -webkit-linear-gradient(rgb(56,56,56), rgb(37,37,37));
+		padding:10px;
+		margin-bottom:15px;
+		color:rgb(187,187,187);
+		font-size:12px;
+		font-weight:bold;
+		text-transform:uppercase;
+	}	
+	
+	#container {
+		padding-left:50px;
+		padding-right:50px;
+	}
+	
+	#footer {
+		background-image: -webkit-linear-gradient(rgb(56,56,56), rgb(37,37,37));
+		padding:10px;
+		color:rgb(187,187,187);
+		font-size:12px;
+		font-weight:bold;
+		text-transform:uppercase;
+	}
+	
+	#save-btn {
+		margin-left:35px;
+	}
+	
+	.edit-button {
+		margin-right:5px;
+		padding-left:3px;
+		padding-top:3px;
+		padding-right:1px;
+		padding-bottom:1px;	
+	}
+	
+	.delete-button {
+		margin-right:5px;
+		padding-left:3px;
+		padding-top:3px;
+		padding-right:1px;
+		padding-bottom:1px;
+	}
+	
+	.completed-button {
+		margin-right:5px;
+		padding-left:3px;
+		padding-top:3px;
+		padding-right:1px;
+		padding-bottom:1px;
+	}
+	
+	.listnode:hover {
+		background:#ddd;
+	}
+	
+	.listnodecompleted:hover {
+		background:rgb(130,225,145);
+	}
+	
+	h1 {
+		margin-left:60px;
+		margin-bottom:5px;
+	}
+	
+	h3 {
+		margin-bottom:10px;
+	}
+	
+	.good-btn-class {
+		color:green;
+	}
+	
+	.bad-btn-class {
+		color:red;
+	}
+
+	</style>
+
+	<script type="text/javascript">
+
+ 
+	$(document).ready(function() {
+		function loadtodos() {
+			$.ajax({
+				type: "GET",
+				url: "/todos.json",
+				success: function(todos_json) {
+					var completedtodos = []
+					var todos = JSON.parse(todos_json)
+					$("#list").find(".divider").remove()
+					$("#list").find(".listnode").remove()
+					$("#completedtodolist").find(".divider").remove()
+					$("#completedtodolist").find(".listnodecompleted").remove()
+					for(var i in todos) {
+						todo = todos[i]
+						if(todo.done) {
+							completedtodos.push(todo)
+						}
+						else {
+							var divider = $("<li></li>")
+							divider.addClass("divider")
+							var node = $("<li></li>")
+							node.addClass("listnode")
+
+							var editbutton = $("<button></button>")
+							editbutton.addClass("edit-button btn btn-warning")
+							editbutton.append("<i class='icon-pencil'></i>")
+							$(editbutton).data("todo-id", todo._id)
+							attach_events_for_edit_button($(editbutton))
+
+							var deletebutton = $("<button></button>")
+							deletebutton.addClass("delete-button btn btn-danger")
+							deletebutton.append("<i class='icon-remove'></i>")
+							$(deletebutton).data("todo-id", todo._id)
+							attach_events_for_delete_button($(deletebutton))
+
+							var completedbutton = $("<button></button>")
+							completedbutton.addClass("completed-button btn btn-success")
+							completedbutton.append("<i class='icon-ok'></i>")
+							$(completedbutton).data("todo-id", todo._id)
+							attach_events_for_completed_button($(completedbutton))
+
+							node.append(completedbutton)
+							node.append(editbutton)
+							node.append(deletebutton)
+							node.append(todo.name + " - " + todo.content)
+							$("#list").append(divider)
+							$("#list").append(node)
+						}
+					}
+					
+					var divider = $("<li></li>")
+					divider.addClass("divider")
+					$("#list").append(divider)
+					
+					for(var i in completedtodos) {
+						var todo = completedtodos[i]
+						var divider = $("<li></li>")
+						divider.addClass("divider")
+						var node = $("<li></li>")
+						node.addClass("listnodecompleted")
+						
+						node.append(todo.name + " - " + todo.content)
+						$("#completedtodolist").append(divider)
+						$("#completedtodolist").append(node)
+					}
+					var divider = $("<li></li>")
+					divider.addClass("divider")
+					$("#completedtodolist").append(divider)
+				}
+			})
+		}
+
+		loadtodos()
+
+		$("#create-btn").click(function() {
+			var textfieldtext = $("#title-text-field").val()
+			var textareatext = $("#desc-text-area").val()
+			$("#title-text-field").val("")
+			$("#desc-text-area").val("")
+			$.ajax({
+				type: "POST",
+				url: "/todos.json",
+				data: {
+					todo:JSON.stringify({
+						name: textfieldtext,
+						content: textareatext,
+						done: false
+					}) 
+				},
+				success: function() { 
+					loadtodos()
+					$("#create-btn-area").addClass("good-btn-class")
+					$("#create-btn-area").removeClass("bad-btn-class")
+					$("#create-btn-area").html("To-do has been added")
+					setTimeout("$('#create-btn-area').html(' ');", 3000)
+				},
+				error: function() {
+					loadtodos()
+					$("#create-btn-area").addClass("bad-btn-class")
+					$("#create-btn-area").removeClass("good-btn-class")
+					$("#create-btn-area").html("Something went wrong")
+					setTimeout("$('#create-btn-area').html(' ');", 3000)
+				}
+			})
+		})
+		
+		function attach_events_for_edit_button(node) {
+			$(node).click(function() {
+				var content = prompt("What should the todo say?", "")
+				$.ajax({
+					type: "PUT",
+					url: "/todos/" + $(node).data("todo-id") +".json",
+					data: {
+						newcontent: content
+					},
+					success: function() {
+						loadtodos()
+					},
+					error: function() {
+						loadtodos()
+					}
+				})
+			})
+		}
+		
+		function attach_events_for_delete_button(node) {
+			$(node).click(function() {
+				var conf = confirm("Are you sure you wish to delete this todo?")
+				if(conf == true) {
+					$.ajax({
+						type: "DELETE",
+						url: "/todos/" + $(node).data("todo-id") +".json",
+						success: function() {
+							loadtodos()
+						},
+						error: function() {
+							loadtodos()
+						}
+					})
+				}
+			})
+		}
+		
+		function attach_events_for_completed_button(node) {
+			$(node).click(function() {
+				$.ajax({
+					type: "PUT",
+					url: "/todos/" + $(node).data("todo-id") + "/completed.json",
+					success: function() {
+						loadtodos()
+					}
+				})
+			})
+		}
+		
+	})
+	</script>
+</head>
+<body>
+	<div id="header">
+		The Top of A To-do List
+	</div>
+	<h1>A To-do List!</h1>
+	<div id="container">
+		<div class="tab-content">
+				<form class="well">
+					<div class="todo-title">
+						<input type="text" class="span3" placeholder="To-do Title" id="title-text-field">
+					</div>
+					<div class="todo-text">
+						<textarea class="input-xlarge" rows="3" placeholder="Description" id="desc-text-area"></textarea>
+					</div>
+					<button type="button" class="btn" id="create-btn">Create to-do</button>
+					<div id="create-btn-area"></div>
+				</form>
+				<div class="well" id="completed-well">
+					<ul class="nav nav-list" id="list">
+						<h3>Your to-do list</h3>
+					</ul>
+					</div>
+					<div class="well">
+					<ul class="nav nav-list" id="completedtodolist">
+						<h3>Completed to-dos</h3>
+					</ul>
+				</div>
+			<div class="input-append">
+			</div>
+		</div>
+	</div>
+
+	<div id="footer">
+		The bottom of a To-do List.
+	</div>
+</body>
+</html>
