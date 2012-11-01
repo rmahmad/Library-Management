@@ -2,7 +2,7 @@ require 'sinatra'
 require 'data_mapper'
 require 'json'
 
-DataMapper::setup(:default, "postgres://root:password@localhost/database.db")
+DataMapper::setup(:default, "mysql://root:password@localhost/db")
 
 class Book
   include DataMapper::Resource
@@ -62,6 +62,10 @@ DataMapper.finalize.auto_upgrade!
 # Show      - GET
 # Update    - PUT
 # Destroy   - DELETE
+
+get '/' do
+	redirect '/index.html'
+end
 
 post '/books.json' do
   book = Book.new
