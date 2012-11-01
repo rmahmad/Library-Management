@@ -52,6 +52,14 @@ class Checkout
   belongs_to :customer, :key => true
 end
 
+class Users
+	include DataMapper::Resource
+	property :id, Serial
+	property :username, Text
+	property :password, Text
+	property :admin, Boolean
+end
+
 DataMapper.finalize.auto_upgrade!
 
 # Resource - books
