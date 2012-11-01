@@ -2,6 +2,7 @@ require 'sinatra'
 require 'data_mapper'
 require 'json'
 
+enable :sessions
 DataMapper::setup(:default, "mysql://root:password@localhost/db")
 
 class Book
@@ -61,6 +62,10 @@ class Users
 end
 
 DataMapper.finalize.auto_upgrade!
+# Set Default Session Variable Values
+#session['login'] = false
+#session['admin'] = false
+#session['username'] = nil
 
 # Resource - books
 
@@ -73,6 +78,43 @@ DataMapper.finalize.auto_upgrade!
 
 get '/' do
 	redirect '/index.html'
+end
+
+get '/login.html' do
+	if session['login'] == true
+		redirect '/index.html'
+	end
+end
+
+get '/index_admin.html' do
+	puts 'CALLED ADMIN'
+	puts session['login']
+	if session['login'] == false || session['login'].nil?
+		redirect '/login.html'
+	elsif session['admin'] == false || session['admin'].nil?
+		redirect '/index_cust.html'
+	end
+end
+
+get '/index_cust.html' do
+	puts 'CALLED CUSTOMER'
+	puts session['login']
+	if session['login'] == false || session['login'].nil?
+		redirect '/login.html'
+	elsif session['admin'] == true
+		redirect '/index_admin.html'
+	end
+end
+
+get '/index.html' do
+	puts 'RAN INDEX'
+	if session['login'] == false || session['login'].nil?
+		redirect '/login.html'
+	elsif session['admin'] == true
+		redirect '/index_admin.html'
+	else
+		redirect '/index_cust.html'
+	end
 end
 
 post '/books.json' do
