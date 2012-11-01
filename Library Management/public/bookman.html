@@ -1,6 +1,10 @@
 <head>
 	<style type="text/css">
-
+		
+		#content-toolbar {
+			background-color: black;
+		}
+		
 	</style>
 
 	<script type="text/javascript">
@@ -25,25 +29,6 @@
 			node.append(checkoutbutton)
 			node.append(editbutton)
 			node.append(deletebutton)
-		}
-
-		function getCheckoutInfo(book, checkoutData) {
-			$.ajax({
-				type: "GET",
-				contentType: "application/json",
-				url: "/checkout/book/" + book.id + ".json",
-				success: function(checkout_json) {
-					checkout = JSON.parse(checkout_json)
-					console.log(checkout)
-					checkoutData["book_title"] = checkout[0].book_title
-					checkoutData["cust_name"] = checkout[0].cust_name
-					checkoutData["publisher"] = checkout[0].publisher
-					checkoutData["author"] = checkout[0].author
-					checkoutData["return_date"] = checkout[0].return_date
-					console.log("checkoutData")
-					console.log(checkoutData)
-				}
-			})
 		}
 
 		function updateTable() {
@@ -79,7 +64,22 @@
 						var book = checkoutbooks[i]
 						console.log(book.id)
 						var checkoutData = {}
-						getCheckoutInfo(book, checkoutData)
+						$.ajax({
+							type: "GET",
+							contentType: "application/json",
+							url: "/checkout/book/" + book.id + ".json",
+							success: function(checkout_json) {
+								checkout = JSON.parse(checkout_json)
+								console.log(checkout)
+								checkoutData["book_title"] = checkout[0].book_title
+								checkoutData["cust_name"] = checkout[0].cust_name
+								checkoutData["publisher"] = checkout[0].publisher
+								checkoutData["author"] = checkout[0].author
+								checkoutData["return_date"] = checkout[0].return_date
+								console.log("checkoutData")
+								console.log(checkoutData)
+							}
+						})
 						console.log(checkoutData)
 						$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
 					}
@@ -176,7 +176,7 @@
 </head>
 <body>
 	<div id="content-toolbar">
-		Book Manager
+		Book Manager vbyhbygb
 	</div>
 	<div id="content-body">
 		<input type="text" placeholder="Book title" id="titletext">
