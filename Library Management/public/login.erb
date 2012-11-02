@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="style.css" type="text/css">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#error-message").load("/did_login_have_error.html")
+
 		});
 	</script>
 </head>
@@ -25,7 +25,9 @@
 			</div>
 			<div class="clear"></div>
 			<div id="content">
-				<div id="error-message"></div>
+				<% if(session['error'] == true) %>
+				<div id="error-message"><b>Username or Password Incorrect. Please try again.</b></div>
+				<% end %>
 				<form id="login-form" method="post" action="/views/login.html">
 					<label for="username-field">User Name</label>
 					<input name="username-field" id="username-field" type="text"></input>

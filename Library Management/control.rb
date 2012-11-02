@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "mysql://root:password@localhost/db")
+DataMapper::setup(:default, "postgres://root:password@localhost/db")
 
 class Book
   include DataMapper::Resource
@@ -91,9 +91,8 @@ get prefix + '/login.html' do
 	if session['login'] == true
 		redirect prefix + '/index.html'
 	else
-		file = File.join(File.dirname(__FILE__), "views", "login.html")
-		file = File.open(file)
-    return file.read
+		template = Tilt.new(File.join(File.dirname(__FILE__), "public", "login.erb"))
+    template.render(self)
   end
 end
 
