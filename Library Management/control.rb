@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "postgres://root:password@localhost/db")
+DataMapper::setup(:default, "mysql://root:password@localhost/db")
 
 class Book
   include DataMapper::Resource
@@ -113,11 +113,45 @@ post prefix + '/login.html' do
 	end
 end
 
-get '/did_login_have_error.html' do
-	if session['error']
-	  file = File.join(File.dirname(__FILE__), "views", "did_login_have_error.html")
-	  file = File.open(file)
-    return file.read
+get prefix + '/register.html' do
+	template = Tilt.new(File.join(File.dirname(__FILE__), "public", "register.erb"))
+    template.render(self)
+end
+
+post prefix + '/register.html' do
+	@username = params['username-field']
+	@password = params['password-field']
+	@rpass = params['repeat-field']
+	@firstname = params['firstname-field']
+	@lastname = params['lastname-field']
+
+	user = Users.first(:username => @username)
+	if @password != @rpass
+		session['registration_error'] = 'Field Error: Password != Repeat'
+		redirect prefix + '/register.html'
+	elsif @username.empty? || @password.empty? || @rpass.empty? || @firstname.empty? || @lastname.empty?
+		session['registration_error'] = 'Field Error: No Fields Can Be Blank'
+		redirect prefix + '/register.html'
+	elsif user
+		session['registration_error'] = 'Name Error: User Name Already Exists'
+		redirect prefix + '/register.html'
+	else
+		user = Users.new
+		user.username = @username
+		user.password = @password
+		user.admin = 0
+
+		if !user.save
+			session['registration_error'] = 'Internal Error: Could Not Save Information. Try Again Later.'
+			redirect prefix + '/register.html'
+		end
+
+		session['registration_error'] = nil
+		session['login'] = true
+		session['admin'] = false
+		session['name'] = @username
+		session['error'] = nil
+		redirect prefix + '/index.html'
 	end
 end
 
@@ -130,6 +164,7 @@ get prefix + '/logout.html' do
 end
 
 get prefix + '/admin.html' do
+	puts session
 	if !session['login']
 		redirect prefix + '/login.html'
 	elsif !session['admin']
@@ -156,7 +191,7 @@ end
 get prefix + '/index.html' do
 	if !session['login']
 		redirect prefix + '/login.html'
-	elsif !session['admin']
+	elsif session['admin']
 		redirect prefix + '/admin.html'
 	else
 		redirect prefix + '/customer.html'

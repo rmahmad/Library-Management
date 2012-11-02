@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script type="text/javascript" src="/jquery.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>		
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+	<div id="wrapper">
+		<div id="column-body" class="columns">
+			<div id="header">
+				<div id="header-left">
+					Bibliotecario <-- What language is this??
+				</div>
+				<div id="header-right">
+					
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+			<div id="content">
+				<% if(session['registration_error']) %>
+				<div id="error-message"><b><%= session['registration_error'] %></b></div>
+				<% end %>
+				<form id="register-form" method="post" action="/views/register.html">
+				<label for="username-field">User Name</label>
+				<input name="username-field" id="username-field" type="text"></input><br />
+				<label for="password-field">Password</label>
+				<input name="password-field" id="password-field" type="password"></input><br />
+				<label for="repeat-field">Repeat Password</label>
+				<input name="repeat-field" id="repeat-field" type="password"></input><br />
+				<label for="firstname-field">First Name</label>
+				<input name="firstname-field" id="firstname-field" type="text"></input><br />
+				<label for="lastname-field">Last Name</label>
+				<input name="lastname-field" id="lastname-field" type="text"></input><br />
+				<input id="submit-button" type="submit" value="Register New Account"></input>
+				</form>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</body>
+</html>
