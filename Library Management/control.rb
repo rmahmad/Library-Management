@@ -36,6 +36,9 @@ class Customer
   property :firstname, Text
   property :lastname, Text
   property :registration, Date, :required => true
+  property :username, Text
+  property :password, Text
+  property :admin, Boolean
   has n, :checkouts, :constraint => :destroy
   has n, :books, :through => :checkouts
 end
@@ -51,14 +54,6 @@ class Checkout
   property :current, Boolean
   belongs_to :book, :key => true
   belongs_to :customer, :key => true
-end
-
-class Users
-	include DataMapper::Resource
-	property :id, Serial
-	property :username, Text
-	property :password, Text
-	property :admin, Boolean
 end
 
 DataMapper.finalize.auto_upgrade!
@@ -97,9 +92,24 @@ get prefix + '/login.html' do
 end
 
 post prefix + '/login.html' do
+	# This is kind of a hack, but we don't care? Create the default administrator account if it doesn't exist.
+	adminuser = Customer.first(:username => 'admin')
+
+	if(!adminuser)
+		adminuseruser = Customer.new
+		adminuseruser.username = 'admin'
+		adminuseruser.password = 'tiger'
+		adminuseruser.admin = 1
+		time = Time.now
+		adminuseruser.registration = "#{time.year}-#{time.month}-#{time.day}"
+		adminuseruser.firstname = "Default"
+		adminuseruser.lastname = "Administrator"
+		adminuseruser.save
+	end
+	
 	@username = params['username-field']
 	@password = params['password-field']
-	user = Users.first(:username => @username)
+	user = Customer.first(:username => @username)
 	if(user && @password == user['password'])
 		# Login Successful
 		session['login'] = true
@@ -125,7 +135,7 @@ post prefix + '/register.html' do
 	@firstname = params['firstname-field']
 	@lastname = params['lastname-field']
 
-	user = Users.first(:username => @username)
+	user = Customer.first(:username => @username)
 	if @password != @rpass
 		session['registration_error'] = 'Field Error: Password != Repeat'
 		redirect prefix + '/register.html'
@@ -136,12 +146,25 @@ post prefix + '/register.html' do
 		session['registration_error'] = 'Name Error: User Name Already Exists'
 		redirect prefix + '/register.html'
 	else
-		user = Users.new
+		user = Customer.new
 		user.username = @username
 		user.password = @password
 		user.admin = 0
+		user.firstname = @firstname
+		user.lastname = @lastname
+		time = Time.now
+		user.registration = "#{time.year}-#{time.month}-#{time.day}"
 
 		if !user.save
+			puts 'Errors Follow'
+			puts 'Errors Follow'
+			puts 'Errors Follow'
+			puts 'Errors Follow'
+			puts 'Errors Follow'
+			puts 'Errors Follow'
+			users.errors.each do |error|
+				puts error
+			end
 			session['registration_error'] = 'Internal Error: Could Not Save Information. Try Again Later.'
 			redirect prefix + '/register.html'
 		end
