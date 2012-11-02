@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "postgres://root:password@localhost/test.db")
+DataMapper::setup(:default, "mysql://root:password@localhost/db")
 
 class Book
   include DataMapper::Resource
@@ -88,20 +88,36 @@ Dir.foreach(File.join(File.dirname(__FILE__), "views")) do |f|
 end
 
 get prefix + '/login.html' do
-	puts "Hello"
 	if session['login'] == true
 		redirect prefix + '/index.html'
-  else
-    file = File.join(File.dirname(__FILE__), "views", "login.html")
-	  file = File.open(file)
+	else
+		file = File.join(File.dirname(__FILE__), "views", "login.html")
+		file = File.open(file)
     return file.read
   end
 end
 
-# This block won't run for some reason.
+post prefix + '/login.html' do
+	@username = params['username-field']
+	@password = params['password-field']
+	user = Users.first(:username => @username)
+	if(@password == user['password'])
+		# Login Successful
+		session['login'] = true
+		session['admin'] = user['admin']
+		session['name'] = user['username']
+		redirect prefix + '/index.html'
+	end
+end
+
+get prefix + '/logout.html' do
+	session['login'] = nil
+	session['admin'] = nil
+	session['name'] = nil
+	redirect prefix + '/login.html'
+end
+
 get prefix + '/admin.html' do
-  puts "asdfasdf"
-  puts "session: #{session.inspect}"
 	if !session['login']
 		redirect prefix + '/login.html'
 	elsif !session['admin']
@@ -113,11 +129,10 @@ get prefix + '/admin.html' do
 	end
 end
 
-# This block won't run for some reason.
 get prefix + '/customer.html' do
 	if !session['login']
 		redirect prefix + '/login.html'
-	elsif !session['admin']
+	elsif session['admin']
 		redirect prefix + '/admin.html'
 	else
 	  file = File.join(File.dirname(__FILE__), "views", "customer.html")
@@ -130,14 +145,13 @@ get prefix + '/index.html' do
 	if !session['login']
 		redirect prefix + '/login.html'
 	elsif !session['admin']
-		redirect preifx + '/admin.html'
+		redirect prefix + '/admin.html'
 	else
 		redirect prefix + '/customer.html'
 	end
 end
 
 get prefix + '/' do
-	puts "Did Run"
 	redirect prefix + '/index.html'
 end
 

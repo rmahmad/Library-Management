@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="/jquery.js"></script>
 	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>		
 	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="style.css" type="text/css">
@@ -34,11 +34,15 @@
 		})
 
 		$(".nav-button").click(function() {
-			$(".selected").removeClass("selected")
-			$("#content").load(this.id + ".html")
-			$(this).addClass("selected")
-			$(this).css("background-image", "")
-			$(this).css("border-right", "")
+			if(this.id == "logout")
+				window.location = '/views/logout.html'
+			else {
+				$(".selected").removeClass("selected")
+				$("#content").load('/views/' + this.id + ".html")
+				$(this).addClass("selected")
+				$(this).css("background-image", "")
+				$(this).css("border-right", "")
+			}
 		})
 
 
@@ -58,6 +62,7 @@
 						<li id="bookman" class="nav-button selected"><div class="nav-text">Book Manager</div></li></li>
 						<li id="search" class="nav-button"><div class="nav-text">Search</div></li>
 						<li id="custman" class="nav-button"><div class="nav-text">Customer Manager</div></li></li>
+						<li id="logout" class="nav-button"><div class="nav-text">Log Out</div></li></li>
 					</ul>
 				</div>
 				<div class="clear"></div>
