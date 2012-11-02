@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "mysql://root:password@localhost/db")
+DataMapper::setup(:default, "postgres://root:password@localhost/test.db")
 
 class Book
   include DataMapper::Resource
@@ -76,44 +76,69 @@ DataMapper.finalize.auto_upgrade!
 # Update    - PUT
 # Destroy   - DELETE
 
-get '/login.html' do
+prefix = "/views"
+Dir.foreach(File.join(File.dirname(__FILE__), "views")) do |f|
+  full_path = File.join(File.dirname(__FILE__), "views", f)
+  unless [".", "..", "admin.html", "customer.html", "login.html", "index.html"].include? f then
+    route = prefix + "/" + f
+    get route do
+      send_file full_path
+    end
+  end
+end
+
+get prefix + '/login.html' do
 	puts "Hello"
 	if session['login'] == true
-		redirect '/index.html'
-	end
+		redirect prefix + '/index.html'
+  else
+    file = File.join(File.dirname(__FILE__), "views", "login.html")
+	  file = File.open(file)
+    return file.read
+  end
 end
 
 # This block won't run for some reason.
-get '/admin.html' do
-	if session['login'] == false
-		redirect '/login.html'
-	elsif session['admin'] == false
-		redirect '/customer.html'
-	end
-end
-
-# This block won't run for some reason.
-get '/customer.html' do
-	if session['login'] == false || session['login'].nil?
-		redirect '/login.html'
-	elsif session['admin'] == true
-		redirect '/admin.html'
-	end
-end
-
-get '/index.html' do
-	if session['login'] == false || session['login'].nil?
-		redirect '/login.html'
-	elsif session['admin'] == true
-		redirect '/admin.html'
+get prefix + '/admin.html' do
+  puts "asdfasdf"
+  puts "session: #{session.inspect}"
+	if !session['login']
+		redirect prefix + '/login.html'
+	elsif !session['admin']
+		redirect prefix + '/customer.html'
 	else
-		redirect '/customer.html'
+	  file = File.join(File.dirname(__FILE__), "views", "admin.html")
+	  file = File.open(file)
+    return file.read
 	end
 end
 
-get '/' do
+# This block won't run for some reason.
+get prefix + '/customer.html' do
+	if !session['login']
+		redirect prefix + '/login.html'
+	elsif !session['admin']
+		redirect prefix + '/admin.html'
+	else
+	  file = File.join(File.dirname(__FILE__), "views", "customer.html")
+	  file = File.open(file)
+    return file.read
+	end
+end
+
+get prefix + '/index.html' do
+	if !session['login']
+		redirect prefix + '/login.html'
+	elsif !session['admin']
+		redirect preifx + '/admin.html'
+	else
+		redirect prefix + '/customer.html'
+	end
+end
+
+get prefix + '/' do
 	puts "Did Run"
-	redirect '/index.html'
+	redirect prefix + '/index.html'
 end
 
 post '/books.json' do
