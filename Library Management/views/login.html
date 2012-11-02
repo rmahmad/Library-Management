@@ -1,10 +1,15 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="/jquery.js"></script>
 	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>		
 	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="style.css" type="text/css">
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#error-message").load("/did_login_have_error.html")
+		});
+	</script>
 </head>
 <body>
 	<div id="wrapper">
@@ -20,14 +25,15 @@
 			</div>
 			<div class="clear"></div>
 			<div id="content">
+				<div id="error-message"></div>
 				<form id="login-form" method="post" action="/views/login.html">
-					<label for="username-field">Benutzername</label>
+					<label for="username-field">User Name</label>
 					<input name="username-field" id="username-field" type="text"></input>
-					<label for="password-field">Kennwort</label>
+					<label for="password-field">Password</label>
 					<input name="password-field" id="password-field" type="text"></input>
 					<input id="submit-button" type="submit" value="Anmelden"></input>
 				</form>
-				<a href="#">neues Konto erstellen ...</a>
+				<a href="#">new Account Creation ...</a>
 			</div>
 			<div class="clear"></div>
 		</div>

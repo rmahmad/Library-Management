@@ -101,12 +101,24 @@ post prefix + '/login.html' do
 	@username = params['username-field']
 	@password = params['password-field']
 	user = Users.first(:username => @username)
-	if(@password == user['password'])
+	if(user && @password == user['password'])
 		# Login Successful
 		session['login'] = true
 		session['admin'] = user['admin']
 		session['name'] = user['username']
+		session['error'] = nil
 		redirect prefix + '/index.html'
+	else
+		session['error'] = true
+		redirect prefix + '/login.html'
+	end
+end
+
+get '/did_login_have_error.html' do
+	if session['error']
+	  file = File.join(File.dirname(__FILE__), "views", "did_login_have_error.html")
+	  file = File.open(file)
+    return file.read
 	end
 end
 
@@ -114,6 +126,7 @@ get prefix + '/logout.html' do
 	session['login'] = nil
 	session['admin'] = nil
 	session['name'] = nil
+	session['error'] = nil
 	redirect prefix + '/login.html'
 end
 
