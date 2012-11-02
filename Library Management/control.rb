@@ -76,45 +76,44 @@ DataMapper.finalize.auto_upgrade!
 # Update    - PUT
 # Destroy   - DELETE
 
-get '/' do
-	redirect '/index.html'
-end
-
 get '/login.html' do
+	puts "Hello"
 	if session['login'] == true
 		redirect '/index.html'
 	end
 end
 
-get '/index_admin.html' do
-	puts 'CALLED ADMIN'
-	puts session['login']
-	if session['login'] == false || session['login'].nil?
+# This block won't run for some reason.
+get '/admin.html' do
+	if session['login'] == false
 		redirect '/login.html'
-	elsif session['admin'] == false || session['admin'].nil?
-		redirect '/index_cust.html'
+	elsif session['admin'] == false
+		redirect '/customer.html'
 	end
 end
 
-get '/index_cust.html' do
-	puts 'CALLED CUSTOMER'
-	puts session['login']
+# This block won't run for some reason.
+get '/customer.html' do
 	if session['login'] == false || session['login'].nil?
 		redirect '/login.html'
 	elsif session['admin'] == true
-		redirect '/index_admin.html'
+		redirect '/admin.html'
 	end
 end
 
 get '/index.html' do
-	puts 'RAN INDEX'
 	if session['login'] == false || session['login'].nil?
 		redirect '/login.html'
 	elsif session['admin'] == true
-		redirect '/index_admin.html'
+		redirect '/admin.html'
 	else
-		redirect '/index_cust.html'
+		redirect '/customer.html'
 	end
+end
+
+get '/' do
+	puts "Did Run"
+	redirect '/index.html'
 end
 
 post '/books.json' do
