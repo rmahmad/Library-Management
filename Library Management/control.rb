@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "mysql://root:password@localhost/db")
+DataMapper::setup(:default, "postgres://root:password@localhost/db")
 
 class Book
   include DataMapper::Resource
@@ -198,7 +198,7 @@ get prefix + '/index.html' do
 	end
 end
 
-get prefix + '/' do
+get '/' do
 	redirect prefix + '/index.html'
 end
 
@@ -380,10 +380,6 @@ get '/checkout/book/:id.json' do
   data = data.to_json
 end
 
-get '/checkout/customer/:id.json' do
-  
-end
-
 put '/checkout/:id.json' do
 
 end
@@ -392,38 +388,87 @@ delete '/checkout/:id.json' do
 
 end
 
-
-
-
-#post '/todos.json' do
-#  @todo = Todo.new
-#  @newtodo = JSON.parse(params["todo"])
-#  @todo.content = @newtodo["content"]
-#  @todo.name = @newtodo["name"]
-#  @todo.done = @newtodo["done"]
-#  
-#  if @todo.save
-#    return @todo.to_json
-#  else
-#    [500, {"error" => "There was an error!"}.to_json]
-#  end
-#end
-#
-#get '/todos.json' do
-#  @todos = Todo.all
-#  @todos = @todos.to_json
-#end
-#
-#get '/todo/:id.json' do
-#  
-#end
-#
-#put '/todo/:id.json' do
-#  
-#end
-#
-#delete '/todo/:id.json' do
-#  
-#end
+post '/search.json' do
+  puts "search.json"
+  search = JSON.parse(params["search"])
+  title = search["title"]
+  publisher = search["publisher"]
+  author_name = search["author"]
+  query = []
+  data = []
+  if(title != "")
+    if(publisher != "")
+      if(author_name != "")
+        query_authors = Author.all(:name => author_name)
+        if(!query_authors.empty?)
+          query = Book.all(:title => title) & Book.all(:publisher => publisher)
+          for book in query do
+            authors = book.authors
+            for author in query_authors do
+              if(!authors.include?(author))
+                query.delete(book)
+              end
+            end
+          end
+        end
+      else
+        query = Book.all(:title => title) & Book.all(:publisher => publisher)
+      end
+    elsif(author_name != "")
+      query_authors = Author.all(:name => author_name)
+      if(!query_authors.empty?)
+        query = Book.all(:title => title)
+        for book in query do
+          authors = book.authors
+          for author in query_authors do
+            if(!authors.include?(author))
+              query.delete(book)
+            end
+          end
+        end
+      end
+      puts "query: #{query.inspect}"
+    else
+      query = Book.all(:title => title)
+    end
+  elsif(publisher != "")
+    if(author_name != "")
+      query_authors = Author.all(:name => author_name)
+      if(!query_authors.empty?)
+        query = Book.all(:publisher => publisher)
+        for book in query do
+          authors = book.authors
+          for author in query_authors do
+            if(!authors.include?(author))
+              query.delete(book)
+            end
+          end
+        end
+      end
+    else
+      query = Book.all(:publisher => publisher)
+    end
+  elsif(author_name != "")
+    query_authors = Author.all(:name => author_name)
+    if(!query_authors.empty?)
+      query = Book.all
+      for book in query
+        authors = book.authors
+        for author in query_authors do
+          if(!authors.include?(author))
+            query.delete(book)
+          end
+        end
+      end
+    end
+  end
+  
+  for entry in query do
+    for author in entry.authors do
+      data << Hash["title", entry.title, "publisher", entry.publisher, "author", author]
+    end
+  end
+  data = data.to_json
+end
 
 
