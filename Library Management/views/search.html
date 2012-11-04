@@ -43,12 +43,11 @@
 							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Title</th>\n<th>Author</th>\n<th>Publisher</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
-								console.log(result)
 								if(i%2 == 0) {
-									$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 								}
 								else {
-									$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 								}
 							}
 						}

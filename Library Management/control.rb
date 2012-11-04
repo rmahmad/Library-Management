@@ -440,12 +440,12 @@ post '/search.json' do
     elsif(author_name != "")
       query_authors = Author.all(:name => author_name)
       if(!query_authors.empty?)
-        query = Book.all(:title => title)
-        for book in query do
+        books = Book.all(:title => title)
+        for book in books do
           authors = book.authors
           for author in query_authors do
-            if(!authors.include?(author))
-              query.delete(book)
+            if(authors.include?(author))
+              query << book
             end
           end
         end
@@ -474,12 +474,12 @@ post '/search.json' do
   elsif(author_name != "")
     query_authors = Author.all(:name => author_name)
     if(!query_authors.empty?)
-      query = Book.all
-      for book in query
+      books = Book.all
+      for book in books
         authors = book.authors
         for author in query_authors do
-          if(!authors.include?(author))
-            query.delete(book)
+          if(authors.include?(author))
+            query << book
           end
         end
       end
@@ -487,9 +487,7 @@ post '/search.json' do
   end
   
   for entry in query do
-    for author in entry.authors do
-      data << Hash["title", entry.title, "publisher", entry.publisher, "author", author]
-    end
+      data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
   end
   data = data.to_json
 end
