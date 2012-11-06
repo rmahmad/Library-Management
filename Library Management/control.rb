@@ -3,7 +3,7 @@ require 'data_mapper'
 require 'json'
 
 enable :sessions
-DataMapper::setup(:default, "postgres://root:password@localhost/db")
+DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/test.db")
 
 class Book
   include DataMapper::Resource
