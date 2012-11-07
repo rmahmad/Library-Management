@@ -336,9 +336,12 @@ get '/customer/profile.json' do
 	data = Hash["name", fullname]
 	checkouts = customer.checkouts
 	checkouts_data = []
+	currentdate = Date.new
 	for checkout in checkouts  do
-		checkouts_data << Hash["Book", checkout.book.title, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate]
+		overdue = checkout.returndate < Date.today
+		checkouts_data << Hash["Book", checkout.book.title, "ID", checkout.id, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate, "overdue", overdue]
 	end
+	
 	data["checkouts"] = checkouts_data
 	puts "data: #{data.inspect}"
 	data.to_json
@@ -425,6 +428,13 @@ get '/checkout/book/:id.json' do
     [500, {"error" => "There was an error!"}]
   end
   data = data.to_json
+end
+
+post '/checkout/return/:id.json' do
+	id = params["id"].to_i
+	checkout = Checkout.all(:id => id)
+	checkout.returned = true
+	checkout.current = false
 end
 
 put '/checkout/:id.json' do

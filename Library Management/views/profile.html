@@ -5,11 +5,35 @@
 			font-weight:bold;
 		}
 		
+		tr.overdue {
+			color:red;
+		}
+		
 	</style>
 	
 	<script type="text/javascript">
-		$(document).ready(function() {
-			
+	$(document).ready(function() {
+
+		function return_button(node, checkout_id) {
+			var returnbutton = $("<button></button>")
+			returnbutton.addClass("return-button btn btn-warning")
+			returnbutton.append("<i class='icon-refresh'></i>")
+			$(node).click(function() {
+				var content = confirm("Are you sure you wish to return this book?")
+				if(content) {
+					$.ajax({
+						type: "POST",
+						url: "/checkout/return/" + checkout_id +".json",
+						success: function() {
+							updateTable()
+						}
+					})
+				}
+			})
+			node.append(returnbutton)
+		}
+
+		function updateTable() {
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
@@ -21,21 +45,41 @@
 					var checkouts = results["checkouts"]
 					console.log(checkouts)
 					if(checkouts.length > 0) {
-						$("#checkouts-table").html("<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n</tr>\n\n</table>")
+						$("#checkouts-table").html("Checked out books:\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n<th>Return book</th>\n</tr>\n\n</table>")
 						for(var i in checkouts) {
 							var checkout = checkouts[i]
+							var node = $("<td></td>")
+							return_button(node, checkout["ID"])
 							if(i%2 == 0) {
-								$("#current-checkouts-table").append("<tr class=\"removable\">\n<td>" + checkouts["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								if(checkout.overdue) {
+									$("#current-checkouts-table").append("<tr class=\"overdue removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								}
+								else {
+									$("#current-checkouts-table").append("<tr class=\"removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								}
+								$("#checkouts-table tr:last").append(node)
 							}
 							else {
-								$("#current-checkouts-table").append("<tr class=\"alt removable\">\n<td>" + checkouts["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								if(checkout.overdue) {
+									$("#current-checkouts-table").append("<tr class=\"overdue alt removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								}
+								else {
+									$("#current-checkouts-table").append("<tr class=\"alt removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+								}
+								$("#checkouts-table tr:last").append(node)
 							}
 						}
 					}
+					else {
+						$("#checkouts-table").html("You do not have any currently checked out books.")
+					}
 				}
 			})
-			
-		})
+		}
+
+		updateTable()
+
+	})
 	</script>
 </head>
 <body>
@@ -45,7 +89,6 @@
 	<div id="content-body">
 		Feel free to use the Navigation buttons to the upper left in order to navigate the library.<br />
 		
-		Checked out books:<br />
 		<div id="checkouts-table">
 			
 		</div>
