@@ -38,11 +38,11 @@
 							var node = $("<td></td>")
 							buttonNode(node, book)
 							if(i%2 == 0) {
-								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"removable\">\n<td>" + i + "" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 							else {
-								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + i + "" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 						}
