@@ -2,9 +2,15 @@
 <html>
 <head>
 	<script type="text/javascript" src="/jquery.js"></script>
+<<<<<<< HEAD
 	<script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>		
 	<link rel="stylesheet" href="/bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="style.css" type="text/css">
+=======
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>		
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="../views/style.css" type="text/css">
+>>>>>>> Rachel
 	<script type="text/javascript">
 		$(document).ready(function() {
 
@@ -15,27 +21,29 @@
 	<div id="wrapper">
 		<div id="column-body" class="columns">
 			<div id="header">
-				<div id="header-left">
-					Bibliotecario <-- What language is this??
-				</div>
-				<div id="header-right">
-					
-				</div>
+				Bibliotecario 
+			</div>
 				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>
 			<div id="content">
 				<% if(session['error'] == true) %>
-				<div id="error-message"><b>Username or Password Incorrect. Please try again.</b></div>
+				<div id="error-message" style = "padding-top: 20px; margin:0 auto; text-align:center;"><b>Username or Password Incorrect. Please try again.</b></div>
 				<% end %>
 				<form id="login-form" method="post" action="/views/login.html">
-					<label for="username-field">User Name</label>
-					<input name="username-field" id="username-field" type="text"></input>
-					<label for="password-field">Password</label>
-					<input name="password-field" id="password-field" type="password"></input>
-					<input id="submit-button" type="submit" value="Anmelden"></input>
+					<div id="username-div">
+						<label for="username-field" id= "username-title">User Name</label>
+						<input name="username-field" id="username-field" type="text"></input></div>
+					<div id="password-div">
+						<label for="password-field" id= "password-title">Password</label>
+						<input name="password-field" id="password-field" type="password"></input></div>
+					<div id="submit-button-div">
+						<input id="submit-button" type="submit" value="Sign In"></input>
+						<a href="/views/register.html">Create New Account </a>
+					</div>
+
 				</form>
-				<a href="/views/register.html">new Account Creation ...</a>
+				<br><br><br>
 			</div>
 			<div class="clear"></div>
 		</div>
