@@ -166,6 +166,7 @@
 	}
 
 	#username-title {
+		padding-right: 3px;
 		font-size: 15px;
 	}
 
@@ -174,12 +175,14 @@
 	}
 
 	#username-div {
+		padding-top: 20px;
 		text-align: center;
 		margin:0 auto;
 	}
 
 	#password-title {
 		font-size: 15px;
+		padding-right: 11px;
 	}
 
 	#password-div {

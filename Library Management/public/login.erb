@@ -22,19 +22,22 @@
 			<div class="clear"></div>
 			<div id="content">
 				<% if(session['error'] == true) %>
-				<div id="error-message"><b>Username or Password Incorrect. Please try again.</b></div>
+				<div id="error-message" style = "padding-top: 20px; margin:0 auto; text-align:center;"><b>Username or Password Incorrect. Please try again.</b></div>
 				<% end %>
 				<form id="login-form" method="post" action="/views/login.html">
 					<div id="username-div">
-						<label for="username-field" id= "username-title">User Name</label><br>
+						<label for="username-field" id= "username-title">User Name</label>
 						<input name="username-field" id="username-field" type="text"></input></div>
 					<div id="password-div">
-						<label for="password-field" id= "password-title">Password</label><br>
+						<label for="password-field" id= "password-title">Password</label>
 						<input name="password-field" id="password-field" type="password"></input></div>
 					<div id="submit-button-div">
-						<input id="submit-button" type="submit" value="Anmelden"></input></div>
+						<input id="submit-button" type="submit" value="Sign In"></input>
+						<a href="/views/register.html">Create New Account </a>
+					</div>
+
 				</form>
-				<a href="/views/register.html">new Account Creation ...</a><br><br><br>
+				<br><br><br>
 			</div>
 			<div class="clear"></div>
 		</div>
