@@ -36,7 +36,7 @@ class Customer
   property :firstname, Text
   property :lastname, Text
   property :registration, Date, :required => true
-  property :username, Text
+  property :username, Text, :unique => true
   property :password, Text
   property :admin, Boolean
   has n, :checkouts, :constraint => :destroy
@@ -115,6 +115,7 @@ post prefix + '/login.html' do
 		session['login'] = true
 		session['admin'] = user['admin']
 		session['name'] = user['username']
+		session['user_id'] = user['id']
 		session['error'] = nil
 		redirect prefix + '/index.html'
 	else
@@ -167,14 +168,16 @@ post prefix + '/register.html' do
 			end
 			session['registration_error'] = 'Internal Error: Could Not Save Information. Try Again Later.'
 			redirect prefix + '/register.html'
+		else
+			user = Customer.first(:username => @username)
+			session['registration_error'] = nil
+			session['login'] = true
+			session['admin'] = false
+			session['name'] = @username
+			session['error'] = nil
+			session['user_id'] = user['id']
+			redirect prefix + '/index.html'
 		end
-
-		session['registration_error'] = nil
-		session['login'] = true
-		session['admin'] = false
-		session['name'] = @username
-		session['error'] = nil
-		redirect prefix + '/index.html'
 	end
 end
 
@@ -183,6 +186,7 @@ get prefix + '/logout.html' do
 	session['admin'] = nil
 	session['name'] = nil
 	session['error'] = nil
+	session['user_id'] = nil
 	redirect prefix + '/login.html'
 end
 
@@ -326,8 +330,18 @@ get '/customers.json' do
   customers = customers.to_json
 end
 
-get '/customer/:id.json' do
-
+get '/customer/profile.json' do
+	customer = Customer.get(session["user_id"])
+	fullname = customer.firstname + " " + customer.lastname
+	data = Hash["name", fullname]
+	checkouts = customer.checkouts
+	checkouts_data = []
+	for checkout in checkouts  do
+		checkouts_data << Hash["Book", checkout.book.title, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate]
+	end
+	data["checkouts"] = checkouts_data
+	puts "data: #{data.inspect}"
+	data.to_json
 end
 
 put '/customer/:id.json' do
@@ -359,31 +373,41 @@ end
 # Destroy   - DELETE
 
 post '/checkout.json' do
-  checkout = Checkout.new
-  newcheckout = JSON.parse(params["checkout"])
-  puts "newcheckout #{newcheckout.inspect}"
-  book = Book.get(newcheckout["book_id"])
-  cust = Customer.get(newcheckout["cust_id"])
-  checkout.book = book
-  checkout.customer = cust
-  checkout.current = true
-  checkout.returned = false
-  time = Time.now
-  checkout.checkoutdate = "#{time.year}-#{time.month}-#{time.day}"
-  time = time + 14
-  checkout.returndate = "#{time.year}-#{time.month}-#{time.day}"
-  book.customer = cust
-  cust.books << book
-  if checkout.save
-    return checkout.to_json
-  else
-    [500, {"error" => "There was an error!"}]
-  end
+	checkout = Checkout.new
+	newcheckout = JSON.parse(params["checkout"])
+	puts "newcheckout #{newcheckout.inspect}"
+	book = Book.get(newcheckout["book_id"])
+	checkedout = false
+	for checkout in book.checkouts do
+		if checkout.current
+			checkedout = true
+		end
+	end
+	if !checkedout
+		cust = Customer.get(session["user_id"])
+		checkout.book = book
+		checkout.customer = cust
+		checkout.current = true
+		checkout.returned = false
+		time = Time.now
+		checkout.checkoutdate = "#{time.year}-#{time.month}-#{time.day}"
+		time = time + 14
+		checkout.returndate = "#{time.year}-#{time.month}-#{time.day}"
+		book.customer = cust
+		cust.books << book
+		if checkout.save
+			return checkout.to_json
+		else
+			[500, {"error" => "There was an error!"}]
+		end
+	else
+		[500, {"error" => "Book is already checked out."}]
+	end
 end
 
 get '/checkout.json' do
-  @checkouts = Checkout.all
-  @checkouts = @checkouts.to_json
+	@checkouts = Checkout.all
+	@checkouts = @checkouts.to_json
 end
 
 get '/checkout/book/:id.json' do
@@ -411,7 +435,7 @@ delete '/checkout/:id.json' do
 
 end
 
-post '/search.json' do
+post '/booksearch.json' do
   puts "search.json"
   search = JSON.parse(params["search"])
   title = search["title"]
@@ -488,6 +512,29 @@ post '/search.json' do
   
   for entry in query do
       data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
+  end
+  data = data.to_json
+end
+
+post '/custsearch.json' do
+  puts "search.json"
+  search = JSON.parse(params["search"])
+  firstname = search["firstname"]
+  lastname = search["lastname"]
+  query = []
+  data = []
+  if(firstname != "")
+    if(lastname != "")
+      query = Customer.all(:firstname => firstname) & Customer.all(:lastname => lastname)
+    else
+      query = Customer.all(:firstname => firstname)
+    end
+  elsif(lastname != "")
+    query = Customer.all(:lastname => lastname)
+  end
+  
+  for entry in query do
+      data << Hash["ID", entry.id, "firstname", entry.firstname, "lastname", entry.lastname, "registration", entry.registration]
   end
   data = data.to_json
 end

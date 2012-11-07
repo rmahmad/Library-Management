@@ -1,0 +1,75 @@
+<head>
+	<style type="text/css">
+	
+		#error-area {
+			color: red;
+		}
+	
+	</style>
+	
+	<script type="text/javascript">
+		
+		$(document).ready(function() {
+			
+			$("#search-btn").click(function() {
+				var firstname = $("#firstname").val()
+				var lastname = $("#lastname").val()
+				$("#firstname").val("")
+				$("#lastname").val("")
+				
+				$.ajax({
+					type: "POST",
+					url: "/custsearch.json",
+					data: {
+						search:JSON.stringify({
+							firstname: firstname,
+							lastname: lastname
+						})
+					},
+					success: function(results_json) {
+						results = JSON.parse(results_json)
+						if(results.length > 0) {
+							$("#error-area").html("")
+							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Customer ID</th>\n<th>Firstname</th>\n<th>Lastname</th>\n<th>Registration Date</th>\n</tr>\n\n</table>")
+							for(var i in results) {
+								var result = results[i]
+								if(i%2 == 0) {
+										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["ID"] +"</td>\n<td>" + result["firstname"] + "</td>\n<td>" + result["lastname"] + "</td>\n<td>" + result["registration"] + "</td>\n</tr>")
+								}
+								else {
+										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["ID"] +"</td>\n<td>" + result["firstname"] + "</td>\n<td>" + result["lastname"] + "</td>\n<td>" + result["registration"] + "</td>\n</tr>")
+								}
+							}
+						}
+						else {
+							$("#search-table").html("")
+							$("#error-area").html("No results found.")
+						}
+					}
+				})
+			})
+			
+		})
+		
+	</script>
+</head>
+<body>
+	<div id="content-toolbar">
+		Search
+	</div>
+	<div id="content-body">
+		Search for...
+		<div>
+			First name:
+			<input id="firstname" type="text"></input><br />
+		</div>
+		<div>
+			Last name:
+			<input id="lastname" type="text"></input><br />
+		</div>
+		<button type="button" class="btn" id="search-btn">Search</button>
+		<div id="search-table">
+		</div>
+		<div id="error-area"></div>
+	</div>
+</body>

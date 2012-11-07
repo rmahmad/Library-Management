@@ -38,8 +38,8 @@
 				url: "/books.json",
 				success: function(books_json) {
 					$("tr.removable").remove()
-					books = JSON.parse(books_json)
-					checkoutbooks = []
+					var books = JSON.parse(books_json)
+					var checkoutbooks = []
 					for(var i in books) {
 						book = books[i]
 						if(!book.checkout) {
@@ -146,18 +146,19 @@
 
 		function attach_events_for_checkout_button(node) {
 			$(node).click(function() {
-				var cust_id = prompt("Enter the id of the customer checking out")
 				$.ajax({
 					type: "POST",
 					url: "/checkout.json",
 					data: {
 						checkout:JSON.stringify({
-							book_id: $(node).data("book-id"),
-							cust_id: cust_id
+							book_id: $(node).data("book-id")
 						})
 					},
 					success: function() {
 						updateTable()
+					},
+					error: function(error) {
+						$("#error-area").html(error[1]["error"])
 					}
 				})
 			})
@@ -177,8 +178,9 @@
 		<input type="text" placeholder="Book author" id="authortext">
 		<input type="text" placeholder="Book publisher" id="publishertext">
 		<button type="btn" id="create-btn">Add book</button>
+		<div id="error-area"></div>
 		<div id="book-list">
-			Available books
+			Book Selection
 			<table id="book-table" border="1">
 				<tr class="save">
 					<th>Title</th>

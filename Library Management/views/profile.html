@@ -1,0 +1,53 @@
+<head>
+	<style type="text/css">
+		
+		#content-toolbar {
+			font-weight:bold;
+		}
+		
+	</style>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+			$.ajax({
+				type: "GET",
+				contentType: "application/json",
+				url: "/customer/profile.json",
+				success: function(results_json) {
+					var results = JSON.parse(results_json)
+					var name = results["name"]
+					$("#content-toolbar").html("Welcome back, " + name + "!")
+					var checkouts = results["checkouts"]
+					console.log(checkouts)
+					if(checkouts.length > 0) {
+						$("#checkouts-table").html("<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n</tr>\n\n</table>")
+						for(var i in checkouts) {
+							var checkout = checkouts[i]
+							if(i%2 == 0) {
+								$("#current-checkouts-table").append("<tr class=\"removable\">\n<td>" + checkouts["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+							}
+							else {
+								$("#current-checkouts-table").append("<tr class=\"alt removable\">\n<td>" + checkouts["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+							}
+						}
+					}
+				}
+			})
+			
+		})
+	</script>
+</head>
+<body>
+	<div id="content-toolbar">
+		LKSADFJLJADSHGLKJASDLGJHDJLGKAJSDFJKLDASHGKLSADJFLKSHGDLKADSJGHKJSDH
+	</div>
+	<div id="content-body">
+		Feel free to use the Navigation buttons to the upper left in order to navigate the library.<br />
+		
+		Checked out books:<br />
+		<div id="checkouts-table">
+			
+		</div>
+	</div>
+</body>
