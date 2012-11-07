@@ -166,11 +166,11 @@
 	}
 
 	#username-title {
-		color: red;
+		font-size: 15px;
 	}
 
 	#username-field {
-		width: 50%;
+		width: 30%;
 	}
 
 	#username-div {
@@ -178,10 +178,18 @@
 		margin:0 auto;
 	}
 
+	#password-title {
+		font-size: 15px;
+	}
+
 	#password-div {
 		text-align: center;
 		margin:0 auto;
 
+	}
+
+	#password-field {
+		width: 30%;
 	}
 
 	#submit-button-div {
