@@ -27,7 +27,6 @@
 		text-align: center;
 	}
 
-	
 	#header {
 		height:20px;
 		color:#444;
@@ -49,8 +48,6 @@
 		font-weight:bold;
 		font-size:20px;
 	}
-
-
 
 	#navigation-div {
 		margin:0 auto;
@@ -145,19 +142,6 @@
 		padding-left:5px;
 	}
 
-
-
-
-  
-
-
-
-
-	#selected-button {
-		position:absolute;
-		z-index:-1;
-	}
-
 	#content {
 		margin:0 auto;
 		position:relative;
@@ -221,8 +205,12 @@
 		font-weight:bold;
 		font-size:16px;
 	}
+	
+	form {
+		margin-bottom:0px;
+	}
 
-	.content-toolbar {
+/*	.content-toolbar {
 		color:white;
 		padding:10px 0px 10px 0px;
 		padding-left:15px;
@@ -237,3 +225,4 @@
 		text-shadow:0px 1px 1px #000;
 		font-size:15px;
 	}
+*/
