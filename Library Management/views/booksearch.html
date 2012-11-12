@@ -10,19 +10,22 @@
 		
 		$(document).ready(function() {
 			
-			$("#search-btn").click(function() {
+			$("#book-search-form").submit(function() {
+				var book_id = $("#book_id").val()
 				var title = $("#title").val()
 				var publisher = $("#publisher").val()
 				var author = $("#author").val()
 				$("#title").val("")
 				$("#publisher").val("")
 				$("#author").val("")
+				$("#book_id").val("")
 				
 				$.ajax({
 					type: "POST",
 					url: "/booksearch.json",
 					data: {
 						search:JSON.stringify({
+							book_id: book_id,
 							title: title,
 							publisher: publisher,
 							author: author
@@ -30,8 +33,6 @@
 					},
 					success: function(results_json) {
 						results = JSON.parse(results_json)
-						console.log(results)
-						console.log("results length " + results.length)
 						if(results.length > 0) {
 							$("#error-area").html("")
 							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Title</th>\n<th>Author</th>\n<th>Publisher</th>\n</tr>\n\n</table>")
@@ -51,6 +52,7 @@
 						}
 					}
 				})
+				return false;
 			})
 			
 		})
@@ -63,6 +65,7 @@
 	</div>
 	<div id="content-body">
 		Search for...
+<<<<<<< HEAD
 		<div>
 			Book title:
 			<input id="title" type="text"></input><br />
@@ -77,6 +80,26 @@
 		</div>
 		<button type="button" class="btn" id="search-btn">Search</button>
 			<div class="clear"></div><br>
+=======
+		<form id="book-search-form">
+			<div>
+				Book ID:
+				<input id="book_id" type="number" min="1"></input><br />
+				Book title:
+				<input id="title" type="text"></input><br />
+			</div>
+			<div>
+				Book publisher:
+				<input id="publisher" type="text"></input><br />
+			</div>
+			<div>
+				Author:
+				<input id="author" type="text"></input><br />
+			</div>
+			<input type="submit" class="btn" id="search-btn" value="Search"></input>
+			<div class="clear"></div>
+		</form>
+>>>>>>> 4c4d4550b69ac35d116985fb5aa95b6e31cbe445
 		<div id="search-table">
 
 		</div>
