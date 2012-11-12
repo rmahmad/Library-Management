@@ -446,7 +446,7 @@ delete '/checkout/:id.json' do
 end
 
 post '/booksearch.json' do
-  puts "search.json"
+  puts "search.jsonoijadfslkdsjhflkasdgh;laskdjflkasdjglkasdjfklasdghl;asdkjfJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
   search = JSON.parse(params["search"])
   title = search["title"]
   publisher = search["publisher"]
@@ -523,6 +523,7 @@ post '/booksearch.json' do
   for entry in query do
       data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
   end
+  puts data.inspect
   data = data.to_json
 end
 
