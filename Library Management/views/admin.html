@@ -40,11 +40,13 @@
 				$(".selected").removeClass("selected")
 				if(this.id == "bookman") {
 					$("#page-name").html("Book Manager");
-				} else if(this.id == "search") {
-					$("#page-name").html("Search");
+				} else if(this.id == "booksearch") {
+					$("#page-name").html("Book Search");
 				} else if(this.id == "custman") {
 					$("#page-name").html("Customer Manager");
-				} 
+				} else if(this.id == "custsearch") {
+					$("#page-name").html("Customer Search");
+				}
 				$("#content").load('/views/' + this.id + ".html")
 				$(this).addClass("selected")
 				$(this).css("background-image", "")
@@ -80,7 +82,7 @@
 			<div id="content">
 				
 			</div>
-			<div class="clear"></div>
+			<div class="clear"></div><br><br>
 		</div>
 	</div>
 </body>

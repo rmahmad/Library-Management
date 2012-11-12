@@ -32,13 +32,14 @@
 					$("tr.removable").remove()
 					var books = JSON.parse(books_json)
 					var checkoutbooks = []
+					var j = 0
 					for(var i in books) {
 						book = books[i]
 						console.log(book.checkout)
 						if(!book.checkout) {
 							var node = $("<td></td>")
 							buttonNode(node, book)
-							if(i%2 == 0) {
+							if(j%2 == 0) {
 								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
@@ -46,12 +47,13 @@
 								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
+							j++;
 						}
 						else {
 							checkoutbooks.push(book)
 						}
 					}
-
+					var j = 0
 					for(var i in checkoutbooks) {
 						var book = checkoutbooks[i]
 						var checkoutData = {}
@@ -66,7 +68,13 @@
 								checkoutData["publisher"] = checkout[0].publisher
 								checkoutData["author"] = checkout[0].author
 								checkoutData["return_date"] = checkout[0].return_date
-								$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
+								if (j%2 ==0) {
+									$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
+									j++;
+								} else {
+									$('#checkout-book-table').append("<tr class=\"alt removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
+									j++;
+								}
 							}
 						})
 					}
@@ -193,7 +201,7 @@
 					<th style = "width: 15%">Checked out by</th>
 					<th style = "width: 15%">Return date</th>
 				</tr>
-			</table> <br><br><br>
+			</table>
 		</div>
 	</div>
 </body>
