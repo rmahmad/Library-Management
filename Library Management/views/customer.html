@@ -10,29 +10,6 @@
 	$(document).ready(function() {
 		$("#content").load("/views/profile.html")
 
-		$(".nav-button").mouseenter(function() {
-			if(!$(this).hasClass("selected")) {
-				if($.browser.webkit) {
-					$(this).css("background-image", "-webkit-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else if($.browser.opera) {
-					$(this).css("background-image", "-o-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else if($.browser.mozilla) {
-					$(this).css("background-image", "-moz-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else {
-					$(this).css("background-color", "#F6F6F6")
-				}
-
-				$(this).css("border-right", "1px solid rgb(180,180,180)")
-			}
-		})
-
-		$(".nav-button").mouseleave(function() {
-			$(this).css("background-image", "")
-		})
-
 		$(".nav-button").click(function() {
 			if(this.id == "logout")
 				window.location = '/views/logout.html'
@@ -40,8 +17,6 @@
 				$(".selected").removeClass("selected")
 				$("#content").load('/views/' + this.id + ".html")
 				$(this).addClass("selected")
-				$(this).css("background-image", "")
-				$(this).css("border-right", "")
 			}
 		})
 
