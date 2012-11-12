@@ -39,11 +39,7 @@
 						if(!book.checkout) {
 							var node = $("<td></td>")
 							buttonNode(node, book)
-<<<<<<< HEAD
 							if(j%2 == 0) {
-=======
-							if(i%2 == 0) {
->>>>>>> 4c4d4550b69ac35d116985fb5aa95b6e31cbe445
 								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
