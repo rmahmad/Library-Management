@@ -48,7 +48,7 @@
 				success: function(results_json) {
 					var results = JSON.parse(results_json)
 					var name = results["name"]
-					$("#content-toolbar").html("Welcome back, " + name + "!")
+					$("#content-toolbar").html("Welcome, " + name + "!")
 					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\"></div>")
 					var checkouts = results["checkouts"]
 					if(checkouts.length > 0) {

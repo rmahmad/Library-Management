@@ -1,6 +1,6 @@
 	body {
 		font-family:Helvetica, Arial, sans-serif;
-		font-size:11px;
+		font-size:15px;
 		background-color:rgb(200,210,225);
 	}
 
@@ -217,6 +217,67 @@ background-repeat: repeat-x;
 		margin:0 auto;
 		text-align: center;
 
+	}
+
+	#error-message {
+		text-align: center;
+		color: red;
+	}
+
+	#register-form {
+		margin:0 auto;
+		text-align: center;
+		width: 40%;
+	}
+
+
+	#reg-username-title {
+		width: 100%;
+		text-align: left;
+		padding-right: 25%;
+	}
+
+	#reg-username-field {
+		width: 50%;
+
+	}
+
+	#reg-password-title {
+		text-align: left;
+		padding-right: 27%;
+	}
+
+	#reg-password-field {
+		width: 50%;
+
+	}
+
+	#repeat-title {
+		text-align: left;
+		padding-right: 13%;
+	}
+
+	#repeat-field {
+		width: 50%;
+
+	}
+
+	#firstname-title {
+		text-align: left;
+		padding-right: 25%;
+	}
+
+	#firstname-field {
+		width: 50%;
+	}
+
+	#lastname-title {
+		text-align: left;
+		padding-right: 25%;
+	}
+
+	#lastname-field {
+		width: 50%;
 	}
 
 
