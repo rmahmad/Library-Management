@@ -11,17 +11,20 @@
 		
 		$(document).ready(function() {
 			
-			$("#search-btn").click(function() {
+			$("#customer-search-form").submit(function() {
+				var cust_id = $("#cust_id").val()
 				var firstname = $("#firstname").val()
 				var lastname = $("#lastname").val()
 				$("#firstname").val("")
 				$("#lastname").val("")
+				$("#cust_id").val("")
 				
 				$.ajax({
 					type: "POST",
 					url: "/custsearch.json",
 					data: {
 						search:JSON.stringify({
+							cust_id: cust_id,
 							firstname: firstname,
 							lastname: lastname
 						})
@@ -47,6 +50,7 @@
 						}
 					}
 				})
+				return false;
 			})
 			
 		})
@@ -60,14 +64,18 @@
 	<div id="content-body">
 		Search for...
 		<div>
-			First name:
-			<input id="firstname" type="text"></input><br />
-		</div>
-		<div>
-			Last name:
-			<input id="lastname" type="text"></input><br />
-		</div>
-		<button type="button" class="btn" id="search-btn">Search</button>
+			<form id="customer-search-form">
+				Customer ID:
+				<input id="cust_id" type="number" min="1"></input><br />
+				First name:
+				<input id="firstname" type="text"></input><br />
+			</div>
+			<div>
+				Last name:
+				<input id="lastname" type="text"></input><br />
+			</div>
+			<input type="submit" class="btn" id="search-btn" value="Search"></input>
+		</form>
 		<div id="search-table">
 		</div>
 		<div id="error-area"></div>

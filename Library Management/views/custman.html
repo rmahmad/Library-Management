@@ -12,33 +12,33 @@
 				contentType: "application/json",
 				url: "/customers.json",
 				success: function(custs_json) {
-					console.log(custs_json)
 					$("tr.removable").remove();
 					customers = JSON.parse(custs_json)
 					for(var i in customers) {
 						cust = customers[i]
-						console.log(cust)
-						var node = $("<td></td>")
-						var editbutton = $("<button></button>")
-						editbutton.addClass("edit-button btn btn-warning")
-						editbutton.append("<i class='icon-pencil'></i>")
-						$(editbutton).data("cust-id", cust.id)
-						attach_events_for_edit_button($(editbutton))
-						var deletebutton = $("<button></button>")
-						deletebutton.addClass("delete-button btn btn-danger")
-						deletebutton.append("<i class='icon-remove'></i>")
-						$(deletebutton).data("cust-id", cust.id)
-						attach_events_for_delete_button($(deletebutton))
-						node.append(editbutton)
-						node.append(deletebutton)
+						if(!cust.admin) {
+							var node = $("<td></td>")
+							var editbutton = $("<button></button>")
+							editbutton.addClass("edit-button btn btn-warning")
+							editbutton.append("<i class='icon-pencil'></i>")
+							$(editbutton).data("cust-id", cust.id)
+							attach_events_for_edit_button($(editbutton))
+							var deletebutton = $("<button></button>")
+							deletebutton.addClass("delete-button btn btn-danger")
+							deletebutton.append("<i class='icon-remove'></i>")
+							$(deletebutton).data("cust-id", cust.id)
+							attach_events_for_delete_button($(deletebutton))
+							node.append(editbutton)
+							node.append(deletebutton)
 
-						if(i%2 == 0) {
-							$('#cust-table').append("<tr class=\"removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
-							$('#cust-table tr:last').append(node)
-						}
-						else {
-							$('#cust-table').append("<tr class=\"alt removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
-							$('#cust-table tr:last').append(node)
+							if(i%2 == 0) {
+								$('#cust-table').append("<tr class=\"removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+								$('#cust-table tr:last').append(node)
+							}
+							else {
+								$('#cust-table').append("<tr class=\"alt removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+								$('#cust-table tr:last').append(node)
+							}
 						}
 					}
 				}
@@ -48,7 +48,7 @@
 		updateTable()
 
 
-		$("#create-btn").click(function() {
+		$("#add-customer-form").submit(function() {
 			var firstname = $("#firstnametext").val()
 			var lastname = $("#lastnametext").val()
 
@@ -68,6 +68,7 @@
 					updateTable()
 				}
 			})
+			return false;
 		})
 
 		function attach_events_for_edit_button(node) {
@@ -115,9 +116,6 @@
 		
 	</div>
 	<div id="content-body">
-		<input type="text" placeholder="First name" id="firstnametext">
-		<input type="text" placeholder="Last name" id="lastnametext">
-		<button type="btn" id="create-btn">Add customer</button>
 		<div id="cust-list">
 			<table id="cust-table" border="1">
 				<tr class="save">

@@ -12,6 +12,10 @@
 			color:red;
 		}
 		
+		#message-area {
+			color:green;
+		}
+		
 	</style>
 	
 	<script type="text/javascript">
@@ -29,6 +33,7 @@
 						url: "/checkout/return/" + checkout_id +".json",
 						success: function() {
 							updateTable()
+							$("#message-area").html("Book successfully returned!")
 						}
 					})
 				}
@@ -45,8 +50,8 @@
 					var results = JSON.parse(results_json)
 					var name = results["name"]
 					$("#content-toolbar").html("Welcome back, " + name + "!")
+					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\"></div>")
 					var checkouts = results["checkouts"]
-					console.log(checkouts)
 					if(checkouts.length > 0) {
 						$("#checkouts-table").html("Checked out books:\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n<th>Return book</th>\n</tr>\n\n</table>")
 						for(var i in checkouts) {
@@ -87,10 +92,13 @@
 </head>
 <body>
 	<div id="content-toolbar">
-		LKSADFJLJADSHGLKJASDLGJHDJLGKAJSDFJKLDASHGKLSADJFLKSHGDLKADSJGHKJSDH
+		
 	</div>
 	<div id="content-body">
-		Feel free to use the Navigation buttons to the upper left in order to navigate the library.<br />
+		
+		<div id="message-area">
+			
+		</div>
 		
 		<div id="checkouts-table">
 			

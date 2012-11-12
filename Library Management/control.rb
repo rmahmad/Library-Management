@@ -6,54 +6,54 @@ enable :sessions
 DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/test.db")
 
 class Book
-  include DataMapper::Resource
-  property :id, Serial
-  property :title, Text, :required => true
-  property :publisher, Text, :required => true
-  has n, :authorships, :constraint => :destroy
-  has n, :authors, :through => :authorships
-  has n, :checkouts, :constraint => :destroy
-  has 1, :customer, :through => :checkouts
+	include DataMapper::Resource
+	property :id, Serial
+	property :title, Text, :required => true
+	property :publisher, Text, :required => true
+	has n, :authorships, :constraint => :destroy
+	has n, :authors, :through => :authorships
+	has n, :checkouts, :constraint => :destroy
+	has 1, :customer, :through => :checkouts
 end
 
 class Authorship
-  include DataMapper::Resource
-  belongs_to :author, :key => true
-  belongs_to :book, :key => true
+	include DataMapper::Resource
+	belongs_to :author, :key => true
+	belongs_to :book, :key => true
 end
 
 class Author
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, Text, :required => true
-  has n, :authorships, :constraint => :destroy
-  has n, :books, :through => :authorships
+	include DataMapper::Resource
+	property :id, Serial
+	property :name, Text, :required => true
+	has n, :authorships, :constraint => :destroy
+	has n, :books, :through => :authorships
 end
 
 class Customer 
-  include DataMapper::Resource
-  property :id, Serial
-  property :firstname, Text
-  property :lastname, Text
-  property :registration, Date, :required => true
-  property :username, Text, :unique => true
-  property :password, Text
-  property :admin, Boolean
-  has n, :checkouts, :constraint => :destroy
-  has n, :books, :through => :checkouts
+	include DataMapper::Resource
+	property :id, Serial
+	property :firstname, Text
+	property :lastname, Text
+	property :registration, Date, :required => true
+	property :username, Text, :unique => true
+	property :password, Text
+	property :admin, Boolean
+	has n, :checkouts, :constraint => :destroy
+	has n, :books, :through => :checkouts
 end
 
 class Checkout
-  include DataMapper::Resource
-  property :id, Serial
-  property :checkoutdate, Date
-  property :purchasedate, Date
-  property :returndate, Date
-  property :reserveddate, Date
-  property :returned, Boolean
-  property :current, Boolean
-  belongs_to :book, :key => true
-  belongs_to :customer, :key => true
+	include DataMapper::Resource
+	property :id, Serial
+	property :checkoutdate, Date
+	property :purchasedate, Date
+	property :returndate, Date
+	property :reserveddate, Date
+	property :returned, Boolean
+	property :current, Boolean
+	belongs_to :book, :key => true
+	belongs_to :customer, :key => true
 end
 
 DataMapper.finalize.auto_upgrade!
@@ -73,13 +73,13 @@ DataMapper.finalize.auto_upgrade!
 
 prefix = "/views"
 Dir.foreach(File.join(File.dirname(__FILE__), "views")) do |f|
-  full_path = File.join(File.dirname(__FILE__), "views", f)
-  unless [".", "..", "admin.html", "customer.html", "login.html", "index.html"].include? f then
-    route = prefix + "/" + f
-    get route do
-      send_file full_path
-    end
-  end
+	full_path = File.join(File.dirname(__FILE__), "views", f)
+	unless [".", "..", "admin.html", "customer.html", "login.html", "index.html"].include? f then
+		route = prefix + "/" + f
+		get route do
+			send_file full_path
+		end
+	end
 end
 
 get prefix + '/login.html' do
@@ -87,8 +87,8 @@ get prefix + '/login.html' do
 		redirect prefix + '/index.html'
 	else
 		template = Tilt.new(File.join(File.dirname(__FILE__), "public", "login.erb"))
-    template.render(self)
-  end
+		template.render(self)
+	end
 end
 
 post prefix + '/login.html' do
@@ -106,7 +106,7 @@ post prefix + '/login.html' do
 		adminuseruser.lastname = "Administrator"
 		adminuseruser.save
 	end
-	
+
 	@username = params['username-field']
 	@password = params['password-field']
 	user = Customer.first(:username => @username)
@@ -126,7 +126,7 @@ end
 
 get prefix + '/register.html' do
 	template = Tilt.new(File.join(File.dirname(__FILE__), "public", "register.erb"))
-    template.render(self)
+	template.render(self)
 end
 
 post prefix + '/register.html' do
@@ -197,9 +197,9 @@ get prefix + '/admin.html' do
 	elsif !session['admin']
 		redirect prefix + '/customer.html'
 	else
-	  file = File.join(File.dirname(__FILE__), "views", "admin.html")
-	  file = File.open(file)
-    return file.read
+		file = File.join(File.dirname(__FILE__), "views", "admin.html")
+		file = File.open(file)
+		return file.read
 	end
 end
 
@@ -209,9 +209,9 @@ get prefix + '/customer.html' do
 	elsif session['admin']
 		redirect prefix + '/admin.html'
 	else
-	  file = File.join(File.dirname(__FILE__), "views", "customer.html")
-	  file = File.open(file)
-    return file.read
+		file = File.join(File.dirname(__FILE__), "views", "customer.html")
+		file = File.open(file)
+		return file.read
 	end
 end
 
@@ -230,48 +230,53 @@ get '/' do
 end
 
 post '/books.json' do
-  book = Book.new
-  author = Author.new
+	book = Book.new
+	author = Author.new
 
-  info = JSON.parse(params["book"])
+	info = JSON.parse(params["book"])
 
-  book.title = info["title"]
-  book.publisher = info["publisher"]
+	book.title = info["title"]
+	book.publisher = info["publisher"]
 
-  author.name = info["author"]
+	author.name = info["author"]
 
-  author.books << book
-  book.authors << author
+	author.books << book
+	book.authors << author
 
-  authorship = Authorship.new
-  authorship.book = book
-  authorship.author = author
-  if authorship.save && book.save && author.save
-    return book.to_json
-  else
-    [500, {"error" => "There was an error!"}.to_json]
-  end
+	authorship = Authorship.new
+	authorship.book = book
+	authorship.author = author
+	if authorship.save && book.save && author.save
+		return book.to_json
+	else
+		[500, {"error" => "There was an error!"}.to_json]
+	end
 end
 
 get '/books.json' do
-  puts "Arr, Matey!"
-  books = Book.all
-  data = []
-  for book in books do
-    puts book.inspect
-    author = book.authors
-    puts author.inspect
-    for element in author
-      if book.customer
-        data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", true]
-      else
-        data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", false]
-      end
-    end
-  end
-  puts data.inspect
-  #  books = books.to_json
-  data = data.to_json
+	books = Book.all(:order => [:title.asc])
+	data = []
+	for book in books do
+		puts book.inspect
+		author = book.authors
+		puts author.inspect
+		for element in author
+			if book.customer
+				for checkout in book.checkouts do
+					if(checkout.current)
+						data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", true]
+					else
+						data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", false]
+					end
+				end
+			else
+				data << Hash["id", book.id, "title", book.title, "publisher", book.publisher, "author", element.name, "checkout", false]
+			end
+		end
+	end
+	puts data.inspect
+	#  books = books.to_json
+	data = data.to_json
 end
 
 get '/book/:id.json' do
@@ -279,23 +284,23 @@ get '/book/:id.json' do
 end
 
 put '/book/:id.json' do
-  book = Book.get(params["id"])
-  puts book.inspect
-  book.title = params["newcontent"]
-  if book.save
-    return book.to_json
-  else
-    [500, {"error" => "There was an error!"}]
-  end
+	book = Book.get(params["id"])
+	puts book.inspect
+	book.title = params["newcontent"]
+	if book.save
+		return book.to_json
+	else
+		[500, {"error" => "There was an error!"}]
+	end
 end
 
 delete '/book/:id.json' do
-  book = Book.get(params["id"])
-  if book
-    book.destroy
-  else
-    [500, {"error" => "There was an error!"}]
-  end
+	book = Book.get(params["id"])
+	if book
+		book.destroy
+	else
+		[500, {"error" => "There was an error!"}]
+	end
 end
 
 # Resource - customers
@@ -308,26 +313,26 @@ end
 # Destroy   - DELETE
 
 post '/customers.json' do
-  customer = Customer.new
-  newcust = JSON.parse(params["customer"])
-  customer.firstname = newcust["firstname"]
-  customer.lastname = newcust["lastname"]
-  time = Time.now
-  customer.registration = "#{time.year}-#{time.month}-#{time.day}"
-  if customer.save
-    return customer.to_json
-  else
-    [500, {"error" => "There was an error!"}.to_json]
-  end
-  
+	customer = Customer.new
+	newcust = JSON.parse(params["customer"])
+	customer.firstname = newcust["firstname"]
+	customer.lastname = newcust["lastname"]
+	time = Time.now
+	customer.registration = "#{time.year}-#{time.month}-#{time.day}"
+	if customer.save
+		return customer.to_json
+	else
+		[500, {"error" => "There was an error!"}.to_json]
+	end
+
 end
 
 get '/customers.json' do
-  customers = Customer.all
-  for customer in customers do
-    puts customer.inspect
-  end
-  customers = customers.to_json
+	customers = Customer.all(:order => [:lastname.asc])
+	for customer in customers do
+		puts customer.inspect
+	end
+	customers = customers.to_json
 end
 
 get '/customer/profile.json' do
@@ -339,31 +344,34 @@ get '/customer/profile.json' do
 	currentdate = Date.new
 	for checkout in checkouts  do
 		overdue = checkout.returndate < Date.today
-		checkouts_data << Hash["Book", checkout.book.title, "ID", checkout.id, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate, "overdue", overdue]
+		puts checkout.inspect
+		if(checkout.current)
+			checkouts_data << Hash["Book", checkout.book.title, "ID", checkout.id, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate, "overdue", overdue]
+		end
 	end
-	
+
 	data["checkouts"] = checkouts_data
 	puts "data: #{data.inspect}"
 	data.to_json
 end
 
 put '/customer/:id.json' do
-  customer = Customer.get(params["id"])
-  customer.lastname = params["newcontent"]
-  if customer.save
-    return customer.to_json
-  else
-    [500, {"error" => "There was an error!"}]
-  end
+	customer = Customer.get(params["id"])
+	customer.lastname = params["newcontent"]
+	if customer.save
+		return customer.to_json
+	else
+		[500, {"error" => "There was an error!"}]
+	end
 end
 
 delete '/customer/:id.json' do
-  customer = Customer.get(params["id"])
-  if customer
-    customer.destroy
-  else
-    [500, {"error" => "There was an error!"}]
-  end
+	customer = Customer.get(params["id"])
+	if customer
+		customer.destroy
+	else
+		[500, {"error" => "There was an error!"}]
+	end
 end
 
 # Resource - checkouts
@@ -414,27 +422,33 @@ get '/checkout.json' do
 end
 
 get '/checkout/book/:id.json' do
-  book = Book.get(params["id"])
-  cust = book.customer
-  data = []
-  checkout = Checkout.all(:book => book) & Checkout.all(:customer => cust) & Checkout.all(:current => true)
-  puts checkout.inspect
-  puts cust.inspect
-  puts book.inspect
-  if book
-      data << Hash["book_title", book.title, "cust_name", "#{cust.firstname} #{cust.lastname}", "publisher", book.publisher, "author", book.authors, "return_date", checkout[0].returndate]
-      puts data.inspect
-  else
-    [500, {"error" => "There was an error!"}]
-  end
-  data = data.to_json
+	book = Book.get(params["id"])
+	cust = book.customer
+	data = []
+	checkout = Checkout.all(:book => book) & Checkout.all(:customer => cust) & Checkout.all(:current => true)
+	puts checkout.inspect
+	puts cust.inspect
+	puts book.inspect
+	if book && cust && checkout && checkout.length > 0
+		data << Hash["book_title", book.title, "cust_name", "#{cust.firstname} #{cust.lastname}", "publisher", book.publisher, "author", book.authors, "return_date", checkout[0].returndate]
+		puts data.inspect
+	else
+		[500, {"error" => "There was an error!"}]
+	end
+	data = data.to_json
 end
 
 post '/checkout/return/:id.json' do
 	id = params["id"].to_i
-	checkout = Checkout.all(:id => id)
+	checkout = Checkout.all(:id => id)[0]
 	checkout.returned = true
 	checkout.current = false
+	puts "checkout!1 #{checkout.inspect}"
+	if(checkout.save)
+		puts "yay!"
+	else
+		[500, {"error" => "There was an error!"}]
+	end
 end
 
 put '/checkout/:id.json' do
@@ -446,107 +460,127 @@ delete '/checkout/:id.json' do
 end
 
 post '/booksearch.json' do
-  puts "search.json"
-  search = JSON.parse(params["search"])
-  title = search["title"]
-  publisher = search["publisher"]
-  author_name = search["author"]
-  query = []
-  data = []
-  if(title != "")
-    if(publisher != "")
-      if(author_name != "")
-        query_authors = Author.all(:name => author_name)
-        if(!query_authors.empty?)
-          query = Book.all(:title => title) & Book.all(:publisher => publisher)
-          for book in query do
-            authors = book.authors
-            for author in query_authors do
-              if(!authors.include?(author))
-                query.delete(book)
-              end
-            end
-          end
-        end
-      else
-        query = Book.all(:title => title) & Book.all(:publisher => publisher)
-      end
-    elsif(author_name != "")
-      query_authors = Author.all(:name => author_name)
-      if(!query_authors.empty?)
-        books = Book.all(:title => title)
-        for book in books do
-          authors = book.authors
-          for author in query_authors do
-            if(authors.include?(author))
-              query << book
-            end
-          end
-        end
-      end
-      puts "query: #{query.inspect}"
-    else
-      query = Book.all(:title => title)
-    end
-  elsif(publisher != "")
-    if(author_name != "")
-      query_authors = Author.all(:name => author_name)
-      if(!query_authors.empty?)
-        query = Book.all(:publisher => publisher)
-        for book in query do
-          authors = book.authors
-          for author in query_authors do
-            if(!authors.include?(author))
-              query.delete(book)
-            end
-          end
-        end
-      end
-    else
-      query = Book.all(:publisher => publisher)
-    end
-  elsif(author_name != "")
-    query_authors = Author.all(:name => author_name)
-    if(!query_authors.empty?)
-      books = Book.all
-      for book in books
-        authors = book.authors
-        for author in query_authors do
-          if(authors.include?(author))
-            query << book
-          end
-        end
-      end
-    end
-  end
-  
-  for entry in query do
-      data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
-  end
-  data = data.to_json
+	puts "search.json"
+	search = JSON.parse(params["search"])
+	id = search["book_id"].to_i
+	title = search["title"]
+	publisher = search["publisher"]
+	author_name = search["author"]
+	query = []
+	data = []
+	puts "id: #{Book.get(id)}"
+	if(id)
+		book = Book.get(id)
+		if((title != "" && title == book.title) || (publisher != "" && publisher == book.publisher) || (author_name != nil && book.authors.include?(author_name)) || (title == "" && publisher == "" && author_name == ""))
+			query << book
+		end
+	else
+		if(title != "")
+			if(publisher != "")
+				if(author_name != "")
+					query_authors = Author.all(:name => author_name)
+					if(!query_authors.empty?)
+						query = Book.all(:title => title) & Book.all(:publisher => publisher)
+						for book in query do
+							authors = book.authors
+							for author in query_authors do
+								if(!authors.include?(author))
+									query.delete(book)
+								end
+							end
+						end
+					end
+				else
+					query = Book.all(:title => title) & Book.all(:publisher => publisher)
+				end
+			elsif(author_name != "")
+				query_authors = Author.all(:name => author_name)
+				if(!query_authors.empty?)
+					books = Book.all(:title => title)
+					for book in books do
+						authors = book.authors
+						for author in query_authors do
+							if(authors.include?(author))
+								query << book
+							end
+						end
+					end
+				end
+				puts "query: #{query.inspect}"
+			else
+				query = Book.all(:title => title)
+			end
+		elsif(publisher != "")
+			if(author_name != "")
+				query_authors = Author.all(:name => author_name)
+				if(!query_authors.empty?)
+					query_books = Book.all(:publisher => publisher, :order => [:title.asc])
+					for book in query_books do
+						authors = book.authors
+						for author in query_authors do
+							if(authors.include?(author))
+								query << book
+							end
+						end
+					end
+				end
+			else
+				query = Book.all(:publisher => publisher, :order => [:title.asc])
+			end
+		elsif(author_name != "")
+			query_authors = Author.all(:name => author_name)
+			if(!query_authors.empty?)
+				books = Book.all(:order => [:title.asc])
+				for book in books
+					authors = book.authors
+					for author in query_authors do
+						if(authors.include?(author))
+							query << book
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for entry in query do
+		data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
+	end
+	data = data.to_json
 end
 
 post '/custsearch.json' do
-  puts "search.json"
-  search = JSON.parse(params["search"])
-  firstname = search["firstname"]
-  lastname = search["lastname"]
-  query = []
-  data = []
-  if(firstname != "")
-    if(lastname != "")
-      query = Customer.all(:firstname => firstname) & Customer.all(:lastname => lastname)
-    else
-      query = Customer.all(:firstname => firstname)
-    end
-  elsif(lastname != "")
-    query = Customer.all(:lastname => lastname)
-  end
-  
-  for entry in query do
-      data << Hash["ID", entry.id, "firstname", entry.firstname, "lastname", entry.lastname, "registration", entry.registration]
-  end
-  data = data.to_json
+	puts "search.json"
+	search = JSON.parse(params["search"])
+	puts "search: #{search.inspect}"
+	id = search["cust_id"].to_i
+	firstname = search["firstname"]
+	lastname = search["lastname"]
+	query = []
+	data = []
+	if(id)
+		cust = Customer.get(id)
+		if((firstname != "" && firstname == cust.firstname) || (lastname != nil && lastname == cust.lastname) || (firstname == "" && lastname == ""))
+			query << cust
+		end
+	else
+		if(firstname != "")
+			if(lastname != "")
+				query = Customer.all(:firstname => firstname) & Customer.all(:lastname => lastname)
+			else
+				puts "blahblah"
+				query = Customer.all(:firstname => firstname)
+			end
+		elsif(lastname != "")
+			query = Customer.all(:lastname => lastname)
+		end
+	end
+
+	for entry in query do
+		data << Hash["ID", entry.id, "firstname", entry.firstname, "lastname", entry.lastname, "registration", entry.registration]
+	end
+	puts "data: #{data.inspect}"
+	data = data.to_json
 end
 
 

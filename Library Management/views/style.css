@@ -27,7 +27,6 @@
 		text-align: center;
 	}
 
-	
 	#header {
 		height:50px;
 		color:#444;
@@ -62,8 +61,6 @@ background-repeat: repeat-x;
 		font-size:30px;
 		font-family:"Georgia";
 	}
-
-
 
 	#navigation-div {
 		margin:0 auto;
@@ -256,8 +253,12 @@ background-repeat: repeat-x;
 		font-weight:bold;
 		font-size:16px;
 	}
+	
+	form {
+		margin-bottom:0px;
+	}
 
-	.content-toolbar {
+/*	.content-toolbar {
 		color:white;
 		padding:10px 0px 10px 0px;
 		padding-left:15px;
@@ -275,3 +276,4 @@ background-repeat: repeat-x;
 		text-shadow:0px 1px 1px #000;
 		font-size:15px;
 	}
+*/

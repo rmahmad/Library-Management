@@ -34,15 +34,16 @@
 					var checkoutbooks = []
 					for(var i in books) {
 						book = books[i]
+						console.log(book.checkout)
 						if(!book.checkout) {
 							var node = $("<td></td>")
 							buttonNode(node, book)
 							if(i%2 == 0) {
-								$('#book-table').append("<tr class=\"removable\">\n<td>" + i + "" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 							else {
-								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + i + "" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 						}
@@ -69,6 +70,9 @@
 							}
 						})
 					}
+				},
+				error: function() {
+					
 				}
 			})
 		}
@@ -76,7 +80,7 @@
 		updateTable()
 
 
-		$("#create-btn").click(function() {
+		$("#add-book-form").submit(function() {
 			var titletext = $("#titletext").val()
 			var authortext = $("#authortext").val()
 			var publishertext = $("#publishertext").val()
@@ -99,6 +103,7 @@
 					updateTable()
 				}
 			})
+			return false;
 		})
 
 		function attach_events_for_edit_button(node) {
@@ -156,7 +161,6 @@
 			})
 		}
 
-
 	})
 
 	</script>
@@ -173,10 +177,10 @@
 					<th style = "width: 13%">Edit/Delete</th>
 				</tr>
 				<tr>
-					<td><input type="text" placeholder="Book title" id="titletext" style = "width: 95%; margin-bottom: 0px"></td>
+					<td><form id="add-book-form"><input type="text" placeholder="Book title" id="titletext" style = "width: 95%; margin-bottom: 0px"></td>
 					<td><input type="text" placeholder="Book author" id="authortext" style = "width: 95%; margin-bottom: 0px"></td>
 					<td><input type="text" placeholder="Book publisher" id="publishertext" style = "width: 95%; margin-bottom: 0px"></td>
-					<td><button type="btn" id="create-btn" style= "width: 96%">Add Book</button></td>
+					<td><input type="submit" id="create-btn" style= "width: 96%" value="Add Book"></button></form></td>
 				</tr>
 			</table>
 
