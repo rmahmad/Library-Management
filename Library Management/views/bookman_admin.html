@@ -97,7 +97,6 @@
 		updateTable()
 
 		$("#add-book-form").submit(function() {
-			alert('called');
 			var titletext = $("#titletext").val()
 			var authortext = $("#authortext").val()
 			var publishertext = $("#publishertext").val()
@@ -186,6 +185,7 @@
 	<div id="content-body">
 		<div id="book-list">
 			<h3>Available Books</h3>
+			<form id="add-book-form">
 			<table id="book-table" border="1">
 				<tr class="save">
 					<th style = "width: 30%">Title</th>
@@ -194,12 +194,13 @@
 					<th style = "width: 13%">Action</th>
 				</tr>
 				<tr>
-					<td><form id="add-book-form"><input type="text" placeholder="Book title" id="titletext" style = "width: 95%; margin-bottom: 0px"></td>
+					<td><input type="text" placeholder="Book title" id="titletext" style = "width: 95%; margin-bottom: 0px"></td>
 					<td><input type="text" placeholder="Book author" id="authortext" style = "width: 95%; margin-bottom: 0px"></td>
 					<td><input type="text" placeholder="Book publisher" id="publishertext" style = "width: 95%; margin-bottom: 0px"></td>
-					<td><input type="submit" id="create-btn" style= "width: 96%" value="Add Book"></form></td>
+					<td><input type="submit" id="create-btn" style= "width: 96%" value="Add Book"></td>
 				</tr>
 			</table>
+			</form>
 
 			<br /><h3>Checked Out Books</h3>
 			<table id="checkout-book-table" border="1">
