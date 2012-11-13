@@ -1,5 +1,9 @@
 <head>
-	
+	<script type="text/css">
+		.centered {
+			text-align: center;
+		}
+	</script>
 	<script type="text/javascript">
 	$(document).ready(function() {
 		function buttonNode(node, book) {
@@ -27,6 +31,7 @@
 						if(!book.checkout) {
 							var node = $("<td></td>")
 							buttonNode(node, book)
+							node.addClass('centered');
 							if(j%2 == 0) {
 								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
@@ -82,8 +87,8 @@
 				<tr class="save">
 					<th style = "width: 30%">Title</th>
 					<th style = "width: 30%">Author</th>
-					<th style = "width: 27%">Publisher</th>
-					<th style = "width: 13%">Checkout</th>
+					<th style = "width: 30%">Publisher</th>
+					<th style = "width: 10%">Checkout</th>
 				</tr>
 			</table>
 		</div>

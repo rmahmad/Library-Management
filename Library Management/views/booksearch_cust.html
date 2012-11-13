@@ -5,6 +5,24 @@
 			color: red;
 		}
 	
+	.centered {
+		text-align: center;
+	}
+
+	label {
+		width: 100px;
+		display: inline-block;
+	}
+
+	input {
+		width: 220px;
+		display: inline-block;
+	}
+
+	#book-search-form {
+		width: 900px;
+	}
+
 	</style>
 	<script type="text/javascript">
 		
@@ -66,19 +84,20 @@
 						results = JSON.parse(results_json)
 						if(results.length > 0) {
 							$("#no-results-area").html("")
-							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Title</th>\n<th>Author</th>\n<th>Publisher</th>\n<th>Checkout</th>\n</tr>\n\n</table>")
+							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 30%\">Title</th>\n<th style=\"width: 30%\">Author</th>\n<th style=\"width: 30%\">Publisher</th>\n<th style=\"width: 10%\">Checkout</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
 								console.log(result)
 								var node = $("<td></td>")
 								checkoutNode(node, result)
+								node.addClass('centered');
 								if(i%2 == 0) {
 										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 										$('#search-result-table tr:last').append(node)
 								}
 								else {
 										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
-										$('#search-result-table tr:last').append(node)
+										$('#search-result-table tr:last').append(node);
 								}
 							}
 						}
@@ -96,36 +115,24 @@
 	</script>
 </head>
 <body>
-	<div id="content-toolbar">
-		
-	</div>
+	<div id="content-toolbar"></div>
 	<div id="content-body">
 		<div id="error-area"></div>
 		<div id="success-area"></div>
-		Search for...
-
 		<form id="book-search-form">
-			<div>
-				Book ID:
+				<label for="book_id" id="book-id-label">Book ID</label>
 				<input id="book_id" type="number" min="1"></input><br />
-				Book title:
+				<label for="title" id="title-label">Book Title</label>
 				<input id="title" type="text"></input><br />
-			</div>
-			<div>
-				Book publisher:
-				<input id="publisher" type="text"></input><br />
-			</div>
-			<div>
-				Author:
+				<label for="author" id="author-label">Author</label>
 				<input id="author" type="text"></input><br />
-			</div>
-			<input type="submit" class="btn" id="search-btn" value="Search"></input>
-			<div class="clear"></div>
+				<label for="publisher" id="publisher-label">Book Publisher</label>
+				<input id="publisher" type="text"></input><br />
+				<input type="submit" class="btn" id="search-btn" value="Search"></input>
 		</form>
-		<div id="search-table">
-
-		</div>
-		<div id="no-results-area"></div>
-		</div><br>
 		<div class="clear"></div>
+		<div id="search-table" style="margin-top: 1cm;"></div>
+		<div id="no-results-area"></div>
+	</div><br>
+	<div class="clear"></div>
 </body>
