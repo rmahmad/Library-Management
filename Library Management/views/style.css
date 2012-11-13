@@ -357,3 +357,7 @@ background-repeat: repeat-x;
 		margin:5px;
 		width:50%;
 	}
+	
+	#colorbox-error-area {
+		color: red;
+	}

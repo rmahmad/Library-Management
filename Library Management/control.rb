@@ -339,9 +339,6 @@ end
 
 get '/customers.json' do
 	customers = Customer.all(:order => [:lastname.asc])
-	for customer in customers do
-		puts customer.inspect
-	end
 	customers = customers.to_json
 end
 
@@ -367,7 +364,8 @@ end
 
 put '/customer/:id.json' do
 	customer = Customer.get(params["id"])
-	customer.lastname = params["newcontent"]
+	customer.firstname = params["firstname"]
+	customer.lastname = params["lastname"]
 	if customer.save
 		return customer.to_json
 	else

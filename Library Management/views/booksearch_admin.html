@@ -28,6 +28,23 @@
 		
 		$(document).ready(function() {
 			
+			function buttonNode(node, book) {
+				var editbutton = $("<button></button>")
+				editbutton.addClass("edit-button btn btn-warning inline cboxElement")
+				editbutton.append("<i class='icon-pencil'></i>")
+				$(editbutton).data("book-id", book.id)
+				$(editbutton).click(function() {
+					current_edit_id = $(this).data("book-id")
+				})
+				var deletebutton = $("<button></button>")
+				deletebutton.addClass("delete-button btn btn-danger")
+				deletebutton.append("<i class='icon-remove'></i>")
+				$(deletebutton).data("book-id", book.id)
+				attach_events_for_delete_button($(deletebutton))
+				node.append(editbutton)
+				node.append(deletebutton)
+			}
+			
 			$("#book-search-form").submit(function() {
 				var book_id = $("#book_id").val()
 				var title = $("#title").val()
@@ -52,26 +69,87 @@
 					success: function(results_json) {
 						results = JSON.parse(results_json)
 						if(results.length > 0) {
-							$("#error-area").html("")
+							$("#no-results-area").html("")
 							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 30%\">Title</th>\n<th style=\"width: 30%\">Author</th>\n<th style=\"width: 27%\">Publisher</th><th style=\"width: 13%\">Action</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
+								var node = $("<td></td>")
+								buttonNode(node, result)
+								node.addClass('centered')
 								if(i%2 == 0) {
 										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$('#search-result-table tr:last').append(node)
 								}
 								else {
 										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$('#search-result-table tr:last').append(node)
 								}
 							}
 						}
 						else {
 							$("#search-table").html("")
-							$("#error-area").html("No results found.")
+							$("#no-results-area").html("No results found.")
 						}
+						$(".inline").colorbox({inline:true, width:"50%", height:"60%", href: "#inline_content"});
 					}
 				})
 				return false;
 			})
+			
+			$("#edit-book-form").submit(function() {
+				console.log("poop")
+				if($("#edittitle").val() == "" || $("#editauthor").val() == "" || $("#editpublisher").val() == "") {
+					$("#colorbox-error-area").html("No fields can be blank")
+					setTimeout(function() {
+						$("#colorbox-error-area").html("")
+					}, 3000)
+				}
+				else {
+					var title = $("#edittitle").val()
+					var author = $("#editauthor").val()
+					var publisher = $("#editpublisher").val()
+					$("#colorbox-msg-area").html("Please wait, Updating records...")
+
+					$("#edittitle").val("")
+					$("#editauthor").val("")
+					$("#editpublisher").val("")
+
+					$.ajax({
+						type: "PUT",
+						url: "/book/" + current_edit_id +".json",
+						data: {
+							title: title,
+							author: author,
+							publisher: publisher
+						},
+						success: function() {
+							$("#colorbox-msg-area").html("")
+							$.colorbox.close()
+							$("#book-search-form").submit()
+						},
+						error: function() {
+						}
+					})
+				}
+				return false;
+			})
+			
+			function attach_events_for_delete_button(node) {
+				$(node).click(function() {
+					var conf = confirm("Are you sure you wish to delete this book?")
+					if(conf == true) {
+						$.ajax({
+							type: "DELETE",
+							url: "/book/" + $(node).data("book-id") +".json",
+							success: function() {
+								$("#book-search-form").submit()
+							},
+							error: function() {
+							}
+						})
+					}
+				})
+			}
 			
 		})
 		
@@ -98,4 +176,16 @@
 		<div id="no-results-area"></div>
 	</div><br>
 	<div class="clear"></div>
+	<div style="display:none">
+		<div id='inline_content' style='padding:10px; background:#fff;'>
+			<form id="edit-book-form" class="colorbox-form">
+				<input type="text" placeholder="Book title" class="colorbox-element" id="edittitle" style = "width: 95%; margin-bottom: 0px">
+				<input type="text" placeholder="Book author" class="colorbox-element" id="editauthor" style = "width: 95%; margin-bottom: 0px">
+				<input type="text" placeholder="Book publisher" class="colorbox-element" id="editpublisher" style = "width: 95%; margin-bottom: 0px">
+				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%; margin: auto" value="Edit Book">
+				<div id="colorbox-msg-area"></div>
+				<div id="colorbox-error-area"></div>
+			</form>
+		</div>
+	</div>
 </body>

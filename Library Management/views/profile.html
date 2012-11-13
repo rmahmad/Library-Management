@@ -48,7 +48,7 @@
 					var results = JSON.parse(results_json)
 					var name = results["name"]
 					$("#content-toolbar").html("Welcome, " + name + "!")
-					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\" style=\"margin-top: 1cm;\"></div>")
+					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<div id=\"message-area\"></div>\n<div id=\"checkouts-table\" style=\"margin-top: 1cm;\"></div>")
 					var checkouts = results["checkouts"]
 					if(checkouts.length > 0) {
 						$("#checkouts-table").html("Your currently checked out books are shown below. Overdue books are shown in red.\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 40%\">Book Title</th>\n<th style=\"width: 20%\">Book Author</th>\n<th style=\"width: 20%\">Book Publisher</th>\n<th style=\"width: 15%\">Return Date</th>\n<th style=\"width: 5%\">Return Book</th>\n</tr>\n\n</table>")
