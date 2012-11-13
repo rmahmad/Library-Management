@@ -13,12 +13,6 @@
 			deletebutton.append("<i class='icon-remove'></i>")
 			$(deletebutton).data("book-id", book.id)
 			attach_events_for_delete_button($(deletebutton))
-			var checkoutbutton = $("<button></button>")
-			checkoutbutton.addClass("completed-button btn btn-success")
-			checkoutbutton.append("<i class='icon-ok'></i>")
-			$(checkoutbutton).data("book-id", book.id)
-			attach_events_for_checkout_button($(checkoutbutton))
-			node.append(checkoutbutton)
 			node.append(editbutton)
 			node.append(deletebutton)
 		}
@@ -149,26 +143,6 @@
 			})
 		}
 
-		function attach_events_for_checkout_button(node) {
-			$(node).click(function() {
-				$.ajax({
-					type: "POST",
-					url: "/checkout.json",
-					data: {
-						checkout:JSON.stringify({
-							book_id: $(node).data("book-id")
-						})
-					},
-					success: function() {
-						updateTable()
-					},
-					error: function(error) {
-						$("#error-area").html(error[1]["error"])
-					}
-				})
-			})
-		}
-
 	})
 
 	</script>
@@ -182,7 +156,7 @@
 					<th style = "width: 30%">Title</th>
 					<th style = "width: 30%">Author</th>
 					<th style = "width: 27%">Publisher</th>
-					<th style = "width: 13%">Edit/Delete</th>
+					<th style = "width: 13%">Action</th>
 				</tr>
 				<tr>
 					<td><form id="add-book-form"><input type="text" placeholder="Book title" id="titletext" style = "width: 95%; margin-bottom: 0px"></td>

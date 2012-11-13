@@ -8,39 +8,16 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
-		$("#content").load("bookman.html")
-
-		$(".nav-button").mouseenter(function() {
-			if(!$(this).hasClass("selected")) {
-				if($.browser.webkit) {
-					$(this).css("background-image", "-webkit-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else if($.browser.opera) {
-					$(this).css("background-image", "-o-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else if($.browser.mozilla) {
-					$(this).css("background-image", "-moz-linear-gradient(top, #F6F6F6, #DFDFDF)")
-				}
-				else {
-					$(this).css("background-color", "#F6F6F6")
-				}
-
-				$(this).css("border-right", "1px solid rgb(180,180,180)")
-			}
-		})
-
-		$(".nav-button").mouseleave(function() {
-			$(this).css("background-image", "")
-		})
+		$("#content").load("bookman_admin.html")
 
 		$(".nav-button").click(function() {
 			if(this.id == "logout")
 				window.location = '/views/logout.html'
 			else {
 				$(".selected").removeClass("selected")
-				if(this.id == "bookman") {
+				if(this.id == "bookman_admin") {
 					$("#page-name").html("Book Manager");
-				} else if(this.id == "booksearch") {
+				} else if(this.id == "booksearch_admin") {
 					$("#page-name").html("Book Search");
 				} else if(this.id == "custman") {
 					$("#page-name").html("Customer Manager");
@@ -49,8 +26,6 @@
 				}
 				$("#content").load('/views/' + this.id + ".html")
 				$(this).addClass("selected")
-				$(this).css("background-image", "")
-				$(this).css("border-right", "")
 			}
 		})
 
@@ -70,8 +45,8 @@
 			<div id= "navigation-div">
 				<div id= "navigation">
 					<ul>
-						<li id="bookman" class="nav-button selected"><div class="nav-text">Book Manager</div></li></li>
-						<li id="booksearch" class="nav-button"><div class="nav-text">Book Search</div></li>
+						<li id="bookman_admin" class="nav-button selected"><div class="nav-text">Book Manager</div></li></li>
+						<li id="booksearch_admin" class="nav-button"><div class="nav-text">Book Search</div></li>
 						<li id="custsearch" class="nav-button"><div class="nav-text">Customer Search</div></li>
 						<li id="custman" class="nav-button"><div class="nav-text">Customer Manager</div></li></li>
 						<li id="logout" class="nav-button"><div class="nav-text">Log Out</div></li></li>
