@@ -64,29 +64,43 @@
 		
 	</div>
 	<div id="content-body">
-		Search for@rewrw@...<br>
-
+		
 		<form id="book-search-form">
-			<div>
-				<div class="book-search-align">
-				<input id="book_id" type="number" min="1"></input></div>
-				<br />
-				Book title:
-				<input id="title" type="text"></input><br />
+
+	  Search for...<br><Br>	
+
+			<div style="width:320px; position:absolute; line-height:28px;padding-left:2px; ">
+			
+
+				Book ID:
+				<input id="book_id" type="number" min="1" style="float:right;"></input>
 			</div>
-			<div>
-				Book publisher:
-				<input id="publisher" type="text"></input><br />
+			<br><br>
+			<div style="width:320px; position:absolute; line-height:28px;padding-left:2px; " >
+				Title:
+				<input id="title" type="text" style="float:right;"></input>
 			</div>
-			<div>
+			<br><br>
+			<div style="width:320px; position:absolute; line-height:28px;padding-left:2px; ">
+				Publisher:
+				<input id="publisher" type="text" style="float:right;"></input>
+			</div>
+			<br><br>
+			<div style="width:320px; position:absolute; line-height:28px;padding-left:2px; ">
 				Author:
-				<input id="author" type="text"></input><br />
-			</div><br>
-			<input type="submit" class="btn" id="search-btn" value="Search"></input><br>
+				<input id="author" type="text" style="float:right;"></input>
+			</div>
+			<br><BR><br>
+			<input type="submit" class="btn" id="search-btn" value="Search"></input><br><br>
 			<div class="clear"></div>
 		</form><br>
 		<div id="search-table">
-
+					<tr class="save">
+					<th style = "width: 25%">Title</th>
+					<th style = "width: 25%">Author</th>
+					<th style = "width: 15%">Publisher</th>
+				</tr>
+			
 		</div>
 		<div id="error-area"></div>
 		</div><br>
