@@ -229,6 +229,19 @@ get '/' do
 	redirect prefix + '/index.html'
 end
 
+imageprefix = "/views/images"
+Dir.foreach(File.join(File.dirname(__FILE__), "views", "images")) do |f|
+	full_path = File.join(File.dirname(__FILE__), "views", "images", f)
+	unless [".", ".."].include? f then
+		route = imageprefix + "/" + f
+		get route do
+			send_file full_path
+		end
+	end
+end
+
+
+
 post '/books.json' do
 	book = Book.new
 	author = Author.new
