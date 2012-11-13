@@ -1,5 +1,10 @@
 <head>
-	
+	<script type="text/css">
+		.centered {
+		text-align: center;	
+		}
+		
+	</script>
 	<script type="text/javascript">
 	$(document).ready(function() {
 		
@@ -35,18 +40,19 @@
 					$("tr.removable").remove()
 					var books = JSON.parse(books_json)
 					var checkoutbooks = []
-					var j = 0
+					var j = 1
 					for(var i in books) {
 						book = books[i]
 						if(!book.checkout) {
 							var node = $("<td></td>")
 							buttonNode(node, book)
+							node.addClass('centered')
 							if(j%2 == 0) {
-								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 							else {
-								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
 								$('#book-table tr:last').append(node)
 							}
 							j++;
@@ -91,6 +97,7 @@
 		updateTable()
 
 		$("#add-book-form").submit(function() {
+			alert('called');
 			var titletext = $("#titletext").val()
 			var authortext = $("#authortext").val()
 			var publishertext = $("#publishertext").val()

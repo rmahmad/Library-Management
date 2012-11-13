@@ -48,29 +48,29 @@
 					var results = JSON.parse(results_json)
 					var name = results["name"]
 					$("#content-toolbar").html("Welcome, " + name + "!")
-					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\"></div>")
+					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\" style=\"margin-top: 1cm;\"></div>")
 					var checkouts = results["checkouts"]
 					if(checkouts.length > 0) {
-						$("#checkouts-table").html("Your currently checked out books are shown below. Overdue books are shown in red.\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n<th>Return book</th>\n</tr>\n\n</table>")
+						$("#checkouts-table").html("Your currently checked out books are shown below. Overdue books are shown in red.\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 40%\">Book Title</th>\n<th style=\"width: 20%\">Book Author</th>\n<th style=\"width: 20%\">Book Publisher</th>\n<th style=\"width: 15%\">Return Date</th>\n<th style=\"width: 5%\">Return Book</th>\n</tr>\n\n</table>")
 						for(var i in checkouts) {
 							var checkout = checkouts[i]
 							var node = $("<td></td>")
 							return_button(node, checkout["ID"])
 							if(i%2 == 0) {
 								if(checkout.overdue) {
-									$("#current-checkouts-table").append("<tr class=\"overdue removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+									$("#current-checkouts-table").append("<tr class=\"overdue removable\">\n<td style=\"width: 10%\">" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
 								}
 								else {
-									$("#current-checkouts-table").append("<tr class=\"removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+									$("#current-checkouts-table").append("<tr class=\"removable\">\n<td style=\"width: 10%\">" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
 								}
 								$("#checkouts-table tr:last").append(node)
 							}
 							else {
 								if(checkout.overdue) {
-									$("#current-checkouts-table").append("<tr class=\"overdue alt removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+									$("#current-checkouts-table").append("<tr class=\"overdue alt removable\">\n<td style=\"width: 10%\">" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
 								}
 								else {
-									$("#current-checkouts-table").append("<tr class=\"alt removable\">\n<td>" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
+									$("#current-checkouts-table").append("<tr class=\"alt removable\" >\n<td style=\"width: 10%\">" + checkout["Book"] +"</td>\n<td>" + checkout["Author"][0]["name"] + "</td>\n<td>" + checkout["Publisher"] + "</td>\n<td>" + checkout["Return date"] + "</td>\n</tr>")
 								}
 								$("#checkouts-table tr:last").append(node)
 							}
@@ -89,17 +89,6 @@
 	</script>
 </head>
 <body>
-	<div id="content-toolbar">
-		
-	</div>
-	<div id="content-body">
-		
-		<div id="message-area">
-			
-		</div>
-		
-		<div id="checkouts-table">
-			
-		</div>
-	</div>
+	<div id="content-toolbar"></div>
+	<div id="content-body"></div>
 </body>

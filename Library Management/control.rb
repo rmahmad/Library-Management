@@ -138,13 +138,13 @@ post prefix + '/register.html' do
 
 	user = Customer.first(:username => @username)
 	if @password != @rpass
-		session['registration_error'] = 'Field Error: Password != Repeat'
+		session['registration_error'] = 'Passwords Don\'t Match'
 		redirect prefix + '/register.html'
 	elsif @username.empty? || @password.empty? || @rpass.empty? || @firstname.empty? || @lastname.empty?
-		session['registration_error'] = 'Field Error: No Fields Can Be Blank'
+		session['registration_error'] = 'No Fields Can Be Blank'
 		redirect prefix + '/register.html'
 	elsif user
-		session['registration_error'] = 'Name Error: User Name Already Exists'
+		session['registration_error'] = 'User Name Already Exists'
 		redirect prefix + '/register.html'
 	else
 		user = Customer.new
