@@ -340,3 +340,7 @@ background-repeat: repeat-x;
 	#content-body {
 		padding-top:20px;
 	}
+
+	#book-search-align {
+		width: 500px;
+	}
