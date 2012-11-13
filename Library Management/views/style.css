@@ -348,3 +348,12 @@ background-repeat: repeat-x;
 	#success-area {
 		color: green;
 	}
+	
+	.colorbox-form {
+		text-align:center;
+	}
+	
+	.colorbox-element {
+		margin:5px;
+		width:50%;
+	}

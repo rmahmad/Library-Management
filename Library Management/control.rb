@@ -240,8 +240,6 @@ Dir.foreach(File.join(File.dirname(__FILE__), "views", "images")) do |f|
 	end
 end
 
-
-
 post '/books.json' do
 	book = Book.new
 	author = Author.new
@@ -270,9 +268,7 @@ get '/books.json' do
 	books = Book.all(:order => [:title.asc])
 	data = []
 	for book in books do
-		puts book.inspect
 		author = book.authors
-		puts author.inspect
 		for element in author
 			if book.customer
 				for checkout in book.checkouts do
@@ -287,7 +283,6 @@ get '/books.json' do
 			end
 		end
 	end
-	puts data.inspect
 	#  books = books.to_json
 	data = data.to_json
 end
@@ -298,9 +293,11 @@ end
 
 put '/book/:id.json' do
 	book = Book.get(params["id"])
-	puts book.inspect
-	book.title = params["newcontent"]
-	if book.save
+	author = book.authors[0]
+	book.title = params["title"]
+	author.name = params["author"]
+	book.publisher = params["publisher"]
+	if book.save && author.save
 		return book.to_json
 	else
 		[500, {"error" => "There was an error!"}]
