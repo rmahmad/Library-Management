@@ -1,7 +1,7 @@
 <head>
 	<style type="text/css">
 	
-		#error-area {
+		#no-results-area {
 			color: red;
 		}
 	
@@ -9,6 +9,37 @@
 	<script type="text/javascript">
 		
 		$(document).ready(function() {
+			
+			function checkoutNode(node, book) {
+				var checkoutbutton = $("<button></button>")
+				checkoutbutton.addClass("completed-button btn btn-success")
+				checkoutbutton.append("<i class='icon-ok'></i>")
+				$(checkoutbutton).data("book-id", book.id)
+				$(checkoutbutton).click(function() {
+					$.ajax({
+						type: "POST",
+						url: "/checkout.json",
+						data: {
+							checkout:JSON.stringify({
+								book_id: $(checkoutbutton).data("book-id")
+							})
+						},
+						success: function() {
+							$("#success-area").html("Book successfully checked out!")
+							setTimeout(function () {
+								$("#success-area").html("")
+							}, 3000)
+						},
+						error: function(error) {
+							$("#error-area").html(error["responseText"])
+							setTimeout(function() {
+								$("#error-area").html("")
+							}, 3000)
+						}
+					})
+				})
+				node.append(checkoutbutton)
+			}
 			
 			$("#book-search-form").submit(function() {
 				var book_id = $("#book_id").val()
@@ -34,21 +65,26 @@
 					success: function(results_json) {
 						results = JSON.parse(results_json)
 						if(results.length > 0) {
-							$("#error-area").html("")
-							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Title</th>\n<th>Author</th>\n<th>Publisher</th>\n</tr>\n\n</table>")
+							$("#no-results-area").html("")
+							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th>Title</th>\n<th>Author</th>\n<th>Publisher</th>\n<th>Checkout</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
+								console.log(result)
+								var node = $("<td></td>")
+								checkoutNode(node, result)
 								if(i%2 == 0) {
 										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$('#search-result-table tr:last').append(node)
 								}
 								else {
 										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$('#search-result-table tr:last').append(node)
 								}
 							}
 						}
 						else {
 							$("#search-table").html("")
-							$("#error-area").html("No results found.")
+							$("#no-results-area").html("No results found.")
 						}
 					}
 				})
@@ -64,6 +100,8 @@
 		
 	</div>
 	<div id="content-body">
+		<div id="error-area"></div>
+		<div id="success-area"></div>
 		Search for...
 
 		<form id="book-search-form">
@@ -87,7 +125,7 @@
 		<div id="search-table">
 
 		</div>
-		<div id="error-area"></div>
+		<div id="no-results-area"></div>
 		</div><br>
 		<div class="clear"></div>
 </body>

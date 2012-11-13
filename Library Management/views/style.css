@@ -338,3 +338,11 @@ background-repeat: repeat-x;
 	#content-body {
 		padding-top:20px;
 	}
+	
+	#error-area {
+		color: red;
+	}
+	
+	#success-area {
+		color: green;
+	}

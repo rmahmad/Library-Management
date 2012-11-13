@@ -3,8 +3,7 @@
 		
 		#content-toolbar {
 			font-weight:bold;
-			
-
+			padding-top:20px;
 		}
 		
 		tr.overdue {
@@ -52,7 +51,7 @@
 					$("#content-body").html("Feel free to use the Navigation buttons to the upper right in order to navigate the library.<br />\n<div id=\"message-area\"></div>\n<div id=\"checkouts-table\"></div>")
 					var checkouts = results["checkouts"]
 					if(checkouts.length > 0) {
-						$("#checkouts-table").html("Checked out books:\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n<th>Return book</th>\n</tr>\n\n</table>")
+						$("#checkouts-table").html("Your currently checked out books are shown below. Overdue books are shown in red.\n<table id=\"current-checkouts-table\" border=\"1\">\n<tr class=\"save\">\n<th>Book Title</th>\n<th>Book Author</th>\n<th>Book Publisher</th>\n<th>Return Date</th>\n<th>Return book</th>\n</tr>\n\n</table>")
 						for(var i in checkouts) {
 							var checkout = checkouts[i]
 							var node = $("<td></td>")

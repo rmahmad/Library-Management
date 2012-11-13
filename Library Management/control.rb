@@ -385,13 +385,16 @@ end
 
 post '/checkout.json' do
 	checkout = Checkout.new
+	puts "params #{params.inspect}"
 	newcheckout = JSON.parse(params["checkout"])
 	puts "newcheckout #{newcheckout.inspect}"
 	book = Book.get(newcheckout["book_id"])
 	checkedout = false
-	for checkout in book.checkouts do
-		if checkout.current
-			checkedout = true
+	if(book)
+		for checkout in book.checkouts do
+			if checkout.current
+				checkedout = true
+			end
 		end
 	end
 	if !checkedout
@@ -402,7 +405,7 @@ post '/checkout.json' do
 		checkout.returned = false
 		time = Time.now
 		checkout.checkoutdate = "#{time.year}-#{time.month}-#{time.day}"
-		time = time + 14
+		time = time + (60*60*24*14)
 		checkout.returndate = "#{time.year}-#{time.month}-#{time.day}"
 		book.customer = cust
 		cust.books << book
@@ -412,7 +415,8 @@ post '/checkout.json' do
 			[500, {"error" => "There was an error!"}]
 		end
 	else
-		[500, {"error" => "Book is already checked out."}]
+		puts "i'm here!"
+		[500, "Book is already checked out."]
 	end
 end
 
@@ -468,8 +472,7 @@ post '/booksearch.json' do
 	author_name = search["author"]
 	query = []
 	data = []
-	puts "id: #{Book.get(id)}"
-	if(id)
+	if(id && id != 0)
 		book = Book.get(id)
 		if((title != "" && title == book.title) || (publisher != "" && publisher == book.publisher) || (author_name != nil && book.authors.include?(author_name)) || (title == "" && publisher == "" && author_name == ""))
 			query << book
@@ -544,7 +547,7 @@ post '/booksearch.json' do
 	end
 
 	for entry in query do
-		data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors]
+		data << Hash["title", entry.title, "publisher", entry.publisher, "author", entry.authors, "id", entry.id]
 	end
 	data = data.to_json
 end
@@ -552,13 +555,12 @@ end
 post '/custsearch.json' do
 	puts "search.json"
 	search = JSON.parse(params["search"])
-	puts "search: #{search.inspect}"
 	id = search["cust_id"].to_i
 	firstname = search["firstname"]
 	lastname = search["lastname"]
 	query = []
 	data = []
-	if(id)
+	if(id && id != 0)
 		cust = Customer.get(id)
 		if((firstname != "" && firstname == cust.firstname) || (lastname != nil && lastname == cust.lastname) || (firstname == "" && lastname == ""))
 			query << cust
@@ -568,7 +570,6 @@ post '/custsearch.json' do
 			if(lastname != "")
 				query = Customer.all(:firstname => firstname) & Customer.all(:lastname => lastname)
 			else
-				puts "blahblah"
 				query = Customer.all(:firstname => firstname)
 			end
 		elsif(lastname != "")
@@ -577,9 +578,8 @@ post '/custsearch.json' do
 	end
 
 	for entry in query do
-		data << Hash["ID", entry.id, "firstname", entry.firstname, "lastname", entry.lastname, "registration", entry.registration]
+		data << Hash["ID", entry.id, "firstname", entry.firstname, "lastname", entry.lastname, "registration", entry.registration, "id", entry.id]
 	end
-	puts "data: #{data.inspect}"
 	data = data.to_json
 end
 
