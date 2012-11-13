@@ -482,8 +482,10 @@ post '/booksearch.json' do
 	data = []
 	if(id && id != 0)
 		book = Book.get(id)
-		if((title != "" && title == book.title) || (publisher != "" && publisher == book.publisher) || (author_name != nil && book.authors.include?(author_name)) || (title == "" && publisher == "" && author_name == ""))
-			query << book
+		if(book)
+			if((title == "" || title == book.title) && (publisher == "" || publisher == book.publisher) && (author_name == nil || book.authors.include?(author_name)) || (title == "" && publisher == "" && author_name == ""))
+				query << book
+			end
 		end
 	else
 		if(title != "")
@@ -570,7 +572,7 @@ post '/custsearch.json' do
 	data = []
 	if(id && id != 0)
 		cust = Customer.get(id)
-		if((firstname != "" && firstname == cust.firstname) || (lastname != nil && lastname == cust.lastname) || (firstname == "" && lastname == ""))
+		if((firstname == "" || firstname == cust.firstname) && (lastname == "" || lastname == cust.lastname) || (firstname == "" && lastname == ""))
 			query << cust
 		end
 	else

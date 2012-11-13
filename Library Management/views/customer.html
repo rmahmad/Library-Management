@@ -8,6 +8,10 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
+		$.ajaxSetup({
+			cache: false;
+		});
+		
 		$("#content").load("/views/profile.html")
 
 		$(".nav-button").click(function() {

@@ -10,6 +10,10 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
+		$.ajaxSetup({
+			cache: false;
+		});
+		
 		$("#content").load("bookman_admin.html")
 
 		$(".nav-button").click(function() {
