@@ -1,0 +1,91 @@
+<head>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		function buttonNode(node, book) {
+			var checkoutbutton = $("<button></button>")
+			checkoutbutton.addClass("completed-button btn btn-success")
+			checkoutbutton.append("<i class='icon-ok'></i>")
+			$(checkoutbutton).data("book-id", book.id)
+			attach_events_for_checkout_button($(checkoutbutton))
+			node.append(checkoutbutton)
+		}
+
+		function updateTable() {
+			$.ajax({
+				type: "GET",
+				contentType: "application/json",
+				url: "/books.json",
+				success: function(books_json) {
+					$("tr.removable").remove()
+					var books = JSON.parse(books_json)
+					var checkoutbooks = []
+					var j = 0
+					for(var i in books) {
+						book = books[i]
+						console.log(book.checkout)
+						if(!book.checkout) {
+							var node = $("<td></td>")
+							buttonNode(node, book)
+							if(j%2 == 0) {
+								$('#book-table').append("<tr class=\"removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table tr:last').append(node)
+							}
+							else {
+								$('#book-table').append("<tr class=\"alt removable\">\n<td>" + book.title +"</td>\n<td>" + book.author + "</td>\n<td>" + book.publisher + "</td>\n</tr>")
+								$('#book-table tr:last').append(node)
+							}
+							j++;
+						}
+						else {
+							checkoutbooks.push(book)
+						}
+					}
+				},
+				error: function() {
+					
+				}
+			})
+		}
+
+		updateTable()
+
+		function attach_events_for_checkout_button(node) {
+			$(node).click(function() {
+				$.ajax({
+					type: "POST",
+					url: "/checkout.json",
+					data: {
+						checkout:JSON.stringify({
+							book_id: $(node).data("book-id")
+						})
+					},
+					success: function() {
+						updateTable()
+					},
+					error: function(error) {
+						$("#error-area").html(error[1]["error"])
+					}
+				})
+			})
+		}
+
+	})
+
+	</script>
+</head>
+<body>
+	<div id="content-body">
+		<div id="book-list">
+			<h3>Available Books</h3>
+			<table id="book-table" border="1">
+				<tr class="save">
+					<th style = "width: 30%">Title</th>
+					<th style = "width: 30%">Author</th>
+					<th style = "width: 27%">Publisher</th>
+					<th style = "width: 13%">Checkout</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
