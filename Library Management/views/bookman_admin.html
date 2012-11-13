@@ -34,7 +34,6 @@
 		function updateTable() {
 			$.ajax({
 				type: "GET",
-				cache: false,
 				contentType: "application/json",
 				url: "/books.json",
 				success: function(books_json) {
@@ -69,7 +68,6 @@
 						$.ajax({
 							type: "GET",
 							contentType: "application/json",
-							cache: false,
 							url: "/checkout/book/" + book.id + ".json",
 							success: function(checkout_json) {
 								checkout = JSON.parse(checkout_json)
@@ -110,8 +108,6 @@
 			$.ajax({
 				type: "POST",
 				url: "/books.json",
-				contentType: "application/json",
-				cache: false,
 				data: {
 					book:JSON.stringify({
 						title: titletext,
@@ -147,8 +143,6 @@
 					$.ajax({
 						type: "PUT",
 						url: "/book/" + current_edit_id +".json",
-						contentType: "application/json",
-						cache: false,
 						data: {
 							title: title,
 							author: author,
@@ -173,8 +167,6 @@
 					$.ajax({
 						type: "DELETE",
 						url: "/book/" + $(node).data("book-id") +".json",
-						contentType: "application/json",
-						cache: false,
 						success: function() {
 							updateTable()
 						},

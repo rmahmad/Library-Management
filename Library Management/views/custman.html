@@ -12,7 +12,6 @@
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
-				cache: false,
 				url: "/customers.json",
 				success: function(custs_json) {
 					$("tr.removable").remove();
@@ -64,8 +63,6 @@
 			$.ajax({
 				type: "POST",
 				url: "/customers.json",
-				contentType: "application/json",
-				cache: false,
 				data: {
 					customer:JSON.stringify({
 						firstname: firstname,
@@ -98,8 +95,6 @@
 				$.ajax({
 					type: "PUT",
 					url: "/customer/" + current_edit_id +".json",
-					contentType: "application/json",
-					cache: false,
 					data: {
 						firstname: firstname,
 						lastname: lastname
@@ -123,8 +118,6 @@
 					$.ajax({
 						type: "DELETE",
 						url: "/customer/" + $(node).data("cust-id") +".json",
-						contentType: "application/json",
-						cache: false,
 						success: function() {
 							updateTable()
 						},

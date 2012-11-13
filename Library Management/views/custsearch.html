@@ -41,8 +41,6 @@
 				$.ajax({
 					type: "POST",
 					url: "/custsearch.json",
-					contentType: "application/json",
-					cache: false,
 					data: {
 						search:JSON.stringify({
 							cust_id: cust_id,
@@ -113,8 +111,6 @@
 					$.ajax({
 						type: "PUT",
 						url: "/customer/" + current_edit_id +".json",
-						contentType: "application/json",
-						cache: false,
 						data: {
 							firstname: firstname,
 							lastname: lastname
@@ -138,8 +134,6 @@
 						$.ajax({
 							type: "DELETE",
 							url: "/customer/" + $(node).data("cust-id") +".json",
-							contentType: "application/json",
-							cache: false,
 							success: function() {
 								updateTable()
 							},

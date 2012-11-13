@@ -37,8 +37,6 @@
 					$.ajax({
 						type: "POST",
 						url: "/checkout.json",
-						contentType: "application/json",
-						cache: false,
 						data: {
 							checkout:JSON.stringify({
 								book_id: $(checkoutbutton).data("book-id")

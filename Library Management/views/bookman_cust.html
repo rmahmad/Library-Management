@@ -19,7 +19,6 @@
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
-				cache: false,
 				url: "/books.json",
 				success: function(books_json) {
 					$("tr.removable").remove()
@@ -60,8 +59,6 @@
 				$.ajax({
 					type: "POST",
 					url: "/checkout.json",
-					contentType: "application/json",
-					cache: false,
 					data: {
 						checkout:JSON.stringify({
 							book_id: $(node).data("book-id")
