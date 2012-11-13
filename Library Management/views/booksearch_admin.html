@@ -57,6 +57,8 @@
 				$.ajax({
 					type: "POST",
 					url: "/booksearch.json",
+					contentType: "application/json",
+					cache: false,
 					data: {
 						search:JSON.stringify({
 							book_id: book_id,
@@ -116,6 +118,8 @@
 					$.ajax({
 						type: "PUT",
 						url: "/book/" + current_edit_id +".json",
+						contentType: "application/json",
+						cache: false,
 						data: {
 							title: title,
 							author: author,
@@ -140,6 +144,8 @@
 						$.ajax({
 							type: "DELETE",
 							url: "/book/" + $(node).data("book-id") +".json",
+							contentType: "application/json",
+							cache: false,
 							success: function() {
 								$("#book-search-form").submit()
 							},

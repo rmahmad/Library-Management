@@ -29,6 +29,8 @@
 					$.ajax({
 						type: "POST",
 						url: "/checkout/return/" + checkout_id +".json",
+						contentType: "application/json",
+						cache: false,
 						success: function() {
 							updateTable()
 							$("#message-area").html("Book successfully returned!")
@@ -43,6 +45,7 @@
 			$.ajax({
 				type: "GET",
 				contentType: "application/json",
+				cache: false,
 				url: "/customer/profile.json",
 				success: function(results_json) {
 					var results = JSON.parse(results_json)
