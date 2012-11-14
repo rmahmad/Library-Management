@@ -576,8 +576,10 @@ post '/custsearch.json' do
 	data = []
 	if(id && id != 0)
 		cust = Customer.get(id)
-		if((firstname == "" || firstname == cust.firstname) && (lastname == "" || lastname == cust.lastname) || (firstname == "" && lastname == ""))
-			query << cust
+		if(cust)
+			if((firstname == "" || firstname == cust.firstname) && (lastname == "" || lastname == cust.lastname) || (firstname == "" && lastname == ""))
+				query << cust
+			end
 		end
 	else
 		if(firstname != "")
