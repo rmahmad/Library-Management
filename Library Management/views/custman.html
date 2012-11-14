@@ -16,37 +16,43 @@
 				success: function(custs_json) {
 					$("tr.removable").remove();
 					customers = JSON.parse(custs_json)
-					for(var i in customers) {
-						cust = customers[i]
-						if(!cust.admin) {
-							var node = $("<td></td>")
-							node.addClass('centered');
-							var editbutton = $("<button></button>")
-							editbutton.addClass("edit-button btn btn-warning inline cboxElement")
-							editbutton.append("<i class='icon-pencil'></i>")
-							$(editbutton).data("cust-id", cust.id)
+					if(customers.length == 1) {
+						$('#no-cust').css('display', 'block');
+						$('#cust-table').css('display', 'none');
+					}
+					else {
+						for(var i in customers) {
+							cust = customers[i]
+							if(!cust.admin) {
+								var node = $("<td></td>")
+								node.addClass('centered');
+								var editbutton = $("<button></button>")
+								editbutton.addClass("edit-button btn btn-warning inline cboxElement")
+								editbutton.append("<i class='icon-pencil'></i>")
+								$(editbutton).data("cust-id", cust.id)
 								$(editbutton).data('cust-firstname', cust.firstname)
 								$(editbutton).data('cust-lastname', cust.lastname)
-							$(editbutton).click(function() {
-								current_edit_id = $(this).data("cust-id")
+								$(editbutton).click(function() {
+									current_edit_id = $(this).data("cust-id")
 									$('#editfirstname').val($(this).data('cust-firstname'));
 									$('#editlastname').val($(this).data('cust-lastname'));
-							})
-							var deletebutton = $("<button></button>")
-							deletebutton.addClass("delete-button btn btn-danger")
-							deletebutton.append("<i class='icon-remove'></i>")
-							$(deletebutton).data("cust-id", cust.id)
-							attach_events_for_delete_button($(deletebutton))
-							node.append(editbutton)
-							node.append(deletebutton)
+								})
+								var deletebutton = $("<button></button>")
+								deletebutton.addClass("delete-button btn btn-danger")
+								deletebutton.append("<i class='icon-remove'></i>")
+								$(deletebutton).data("cust-id", cust.id)
+								attach_events_for_delete_button($(deletebutton))
+								node.append(editbutton)
+								node.append(deletebutton)
 
-							if(i%2 == 0) {
-								$('#cust-table').append("<tr class=\"removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
-								$('#cust-table tr:last').append(node)
-							}
-							else {
-								$('#cust-table').append("<tr class=\"alt removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
-								$('#cust-table tr:last').append(node)
+								if(i%2 == 0) {
+									$('#cust-table').append("<tr class=\"removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+									$('#cust-table tr:last').append(node)
+								}
+								else {
+									$('#cust-table').append("<tr class=\"alt removable\">\n<td>" + cust.id +"</td>\n<td>" + cust.firstname + "</td>\n<td>" + cust.lastname + "</td>\n<td>" + cust.registration + "</td>\n</tr>")
+									$('#cust-table tr:last').append(node)
+								}
 							}
 						}
 					}
@@ -153,6 +159,8 @@
 	</div>
 	<div id="content-body">
 		<div id="cust-list">
+			<h3>All Customers</h3>
+			<div id="no-cust" style="display: none; text-align: center; font-weight: bold;">There are no registered customers at this time.</div>
 			<table id="cust-table" border="1">
 				<tr class="save">
 					<th style = "width: 12%">Customer ID</th>

@@ -87,7 +87,6 @@
 							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 10%\">ID</th>\n<th style=\"width: 27%\">Title</th>\n<th style=\"width: 27%\">Author</th>\n<th style=\"width: 27%\">Publisher</th>\n<th style=\"width: 10%\">Checkout</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
-								console.log(result)
 								var node = $("<td></td>")
 								checkoutNode(node, result)
 								node.addClass('centered');
