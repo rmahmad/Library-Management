@@ -25,8 +25,12 @@
 							editbutton.addClass("edit-button btn btn-warning inline cboxElement")
 							editbutton.append("<i class='icon-pencil'></i>")
 							$(editbutton).data("cust-id", cust.id)
+								$(editbutton).data('cust-firstname', cust.firstname)
+								$(editbutton).data('cust-lastname', cust.lastname)
 							$(editbutton).click(function() {
 								current_edit_id = $(this).data("cust-id")
+									$('#editfirstname').val($(this).data('cust-firstname'));
+									$('#editlastname').val($(this).data('cust-lastname'));
 							})
 							var deletebutton = $("<button></button>")
 							deletebutton.addClass("delete-button btn btn-danger")
