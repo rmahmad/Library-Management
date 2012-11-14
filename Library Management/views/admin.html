@@ -10,6 +10,13 @@
 	<script type="text/javascript">
 
 	$(document).ready(function() {
+		
+		var isMSIE = /*@cc_on!@*/0;
+
+		if (isMSIE) {
+			alert("Unfortunately, Perpustakaan is currently not supported on Internet Explorer. The best experience will be found on Google Chrome, Mozilla Firefox, Apple Safari, or Opera")
+		}
+		
 		$.ajaxSetup({
 			cache: false
 		});

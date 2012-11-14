@@ -344,7 +344,7 @@ end
 
 get '/customer/profile.json' do
 	customer = Customer.get(session["user_id"])
-	if(customer) do
+	if(customer) then
 		fullname = customer.firstname + " " + customer.lastname
 		data = Hash["name", fullname]
 		checkouts = customer.checkouts
