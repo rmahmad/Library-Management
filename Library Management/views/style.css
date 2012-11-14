@@ -127,11 +127,12 @@ background-repeat: repeat-x;
 	}
 
 	#content-body table {
-		border:1px solid #888;
+		border-width:1px;
+		border-style:solid;
+		border-color:#888;
 		border-collapse:collapse;
 		width: 100%;
 		margin:auto;
-
 	}
 
 	#content-body tr {
@@ -152,6 +153,9 @@ background-repeat: repeat-x;
 		height:35px;
 		width:50%;
 		background-color:#ecf3ca;
+		border-width:1px;
+		border-style:solid;
+		border-color:#888;
 	
 	/*
 		background-image:-webkit-gradient(linear, left top, left bottom, from(rgb(74,181,124)), to(rgb(53,114,82)));
@@ -168,7 +172,9 @@ background-repeat: repeat-x;
 
 	#content-body td {
 		padding-left:5px;
-
+		border-width:1px;
+		border-style:solid;
+		border-color:#888;
 	}
 
 	#selected-button {
@@ -347,6 +353,10 @@ background-repeat: repeat-x;
 	
 	#success-area {
 		color: green;
+	}
+	
+	#edit-btn {
+		margin-top: 10px;
 	}
 	
 	.colorbox-form {

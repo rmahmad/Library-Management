@@ -62,29 +62,37 @@
 						}
 					}
 					var j = 0
-					for(var i in checkoutbooks) {
-						var book = checkoutbooks[i]
-						var checkoutData = {}
-						$.ajax({
-							type: "GET",
-							contentType: "application/json",
-							url: "/checkout/book/" + book.id + ".json",
-							success: function(checkout_json) {
-								checkout = JSON.parse(checkout_json)
-								checkoutData["book_title"] = checkout[0].book_title
-								checkoutData["cust_name"] = checkout[0].cust_name
-								checkoutData["publisher"] = checkout[0].publisher
-								checkoutData["author"] = checkout[0].author
-								checkoutData["return_date"] = checkout[0].return_date
-								if (j%2 ==0) {
-									$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
-									j++;
-								} else {
-									$('#checkout-book-table').append("<tr class=\"alt removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
-									j++;
+					if(checkoutbooks.length > 0) {
+						for(var i in checkoutbooks) {
+							
+							$("#checkout-area").html("<table id=\"checkout-book-table\" border=\"1\"> <tr class=\"save\"> <th style = \"width: 25%\">Title</th> <th style = \"width: 25%\">Author</th> <th style = \"width: 15%\">Publisher</th> <th style = \"width: 15%\">Checked Out By</th> <th style = \"width: 15%\">Return Date</th> </tr>")
+							
+							var book = checkoutbooks[i]
+							var checkoutData = {}
+							$.ajax({
+								type: "GET",
+								contentType: "application/json",
+								url: "/checkout/book/" + book.id + ".json",
+								success: function(checkout_json) {
+									checkout = JSON.parse(checkout_json)
+									checkoutData["book_title"] = checkout[0].book_title
+									checkoutData["cust_name"] = checkout[0].cust_name
+									checkoutData["publisher"] = checkout[0].publisher
+									checkoutData["author"] = checkout[0].author
+									checkoutData["return_date"] = checkout[0].return_date
+									if (j%2 ==0) {
+										$('#checkout-book-table').append("<tr class=\"removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
+										j++;
+									} else {
+										$('#checkout-book-table').append("<tr class=\"alt removable\">\n<td>" + checkoutData["book_title"] +"</td>\n<td>" + checkoutData["author"][0]["name"] + "</td>\n<td>" + checkoutData["publisher"] + "</td>\n<td>" + checkoutData["cust_name"] + "</td>\n<td>" + checkoutData["return_date"] + "</td>\n</tr>")
+										j++;
+									}
 								}
-							}
-						})
+							})
+						}
+					}
+					else {
+						$("#checkout-area").html("There are no currently checked out books")
 					}
 					addcolorbox()
 				},
@@ -203,24 +211,20 @@
 			</form>
 
 			<br /><h3>Checked Out Books</h3>
-			<table id="checkout-book-table" border="1">
-				<tr class="save">
-					<th style = "width: 25%">Title</th>
-					<th style = "width: 25%">Author</th>
-					<th style = "width: 15%">Publisher</th>
-					<th style = "width: 15%">Checked Out By</th>
-					<th style = "width: 15%">Return Date</th>
-				</tr>
-			</table>
+			<div id="checkout-area">
+				
+				</table>
+			</div>
 		</div>
 	</div>
 	<div style="display:none">
 		<div id='inline_content' style='padding:10px; background:#fff;'>
+			<h3>Please enter new information for the book:</h3>
 			<form id="edit-book-form" class="colorbox-form">
 				<input type="text" placeholder="Book title" class="colorbox-element" id="edittitle" style = "width: 95%; margin-bottom: 0px">
 				<input type="text" placeholder="Book author" class="colorbox-element" id="editauthor" style = "width: 95%; margin-bottom: 0px">
 				<input type="text" placeholder="Book publisher" class="colorbox-element" id="editpublisher" style = "width: 95%; margin-bottom: 0px">
-				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%; margin: auto" value="Edit Book">
+				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%" value="Edit Book">
 				<div id="colorbox-msg-area"></div>
 				<div id="colorbox-error-area"></div>
 			</form>
