@@ -427,7 +427,12 @@ post '/checkout.json' do
 			[500, {"error" => "There was an error!"}]
 		end
 	else
+<<<<<<< HEAD
 		[500, "Book is already checked out."]
+=======
+		puts "i'm here!"
+		[500, {"error" => "Book is already checked out."}]
+>>>>>>> 3d3821780b83c591bb33fe6731a592c0264120f7
 	end
 end
 
