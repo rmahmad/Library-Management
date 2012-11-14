@@ -24,6 +24,7 @@
 				<% if(session['error'] == true) %>
 				<div id="error-message" style = "padding-top: 20px; margin:0 auto; text-align:center;"><b>Username or Password Incorrect. Please try again.</b></div>
 				<% end %>
+				<% session['error'] = false; %>
 				<form id="login-form" method="post" action="/views/login.html">
 					<div id="username-div">
 						<label for="username-field" id= "username-title">User Name</label>
