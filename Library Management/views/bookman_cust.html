@@ -45,6 +45,11 @@
 							checkoutbooks.push(book)
 						}
 					}
+
+					if(j == 0) {
+						$('#no-books').css('display', 'block');
+						$('#book-table').css('display', 'none');
+					}
 				},
 				error: function() {
 					
@@ -83,6 +88,7 @@
 		<div id="error-area"></div>
 		<div id="book-list">
 			<h3>Available Books</h3>
+			<div id="no-books" style="display: none; text-align: center; font-weight: bold;">Sorry! All books have already been checked out. Please try again later!</div>
 			<table id="book-table" border="1">
 				<tr class="save">
 					<th style = "width: 30%">Title</th>
