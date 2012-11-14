@@ -25,6 +25,11 @@
 				<div id="error-message" style = "padding-top: 20px; margin:0 auto; text-align:center;"><b>Username or Password Incorrect. Please try again.</b></div>
 				<% end %>
 				<% session['error'] = false; %>
+				<!--[if IE]>
+				<div style="margin: 1cm auto; border: 1px solid black;">
+					Unfortunately, Perpustakaan is currently not supported on Internet Explorer. The best experience will be found on Google Chrome, Mozilla Firefox, Apple Safari, or Opera
+				</div>
+				<![endif]-->
 				<form id="login-form" method="post" action="/views/login.html">
 					<div id="username-div">
 						<label for="username-field" id= "username-title">User Name</label>
