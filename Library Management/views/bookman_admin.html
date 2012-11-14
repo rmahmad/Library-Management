@@ -104,7 +104,10 @@
 					addcolorbox()
 				},
 				error: function() {
-					
+					$("#error-area").html("There was an error. Please try again.")
+					setTimeout(function() {
+						$("#error-area").html("")
+					}, 5000)
 				}
 			})
 		}
@@ -132,6 +135,12 @@
 				},
 				success: function() {
 					updateTable()
+				},
+				error: function() {
+					$("#error-area").html("There was an error. Please try again")
+					setTimeout(function() {
+						$("#error-area").html("")
+					}, 5000)
 				}
 			})
 			return false;
@@ -149,6 +158,11 @@
 					var title = $("#edittitle").val().trim()
 					var author = $("#editauthor").val().trim()
 					var publisher = $("#editpublisher").val().trim()
+					
+					$("#edittitle").val("")
+					$("#editauthor").val("")
+					$("#editpublisher").val("")
+					
 					if(title.length == 0 || author.length == 0 || publisher.length == 0) {
 						$("#colorbox-error-area").html("All fields must have non-whitespace characters")
 						setTimeout(function() {
@@ -157,10 +171,6 @@
 					}
 					else {
 						$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-						$("#edittitle").val("")
-						$("#editauthor").val("")
-						$("#editpublisher").val("")
 
 						$.ajax({
 							type: "PUT",
@@ -176,6 +186,10 @@
 								updateTable()
 							},
 							error: function() {
+								$("#error-area").html("There was an error. Please try again")
+								setTimeout(function() {
+									$("#error-area").html("")
+								}, 5000)
 							}
 						})
 					}
@@ -194,6 +208,10 @@
 							updateTable()
 						},
 						error: function() {
+							$("#error-area").html("There was an error. Please try again")
+							setTimeout(function() {
+								$("#error-area").html("")
+							}, 5000)
 						}
 					})
 				}
@@ -207,6 +225,7 @@
 <body>
 	<div id="content-body">
 		<div id="book-list">
+			<div id="error-area"></div>
 			<h3>Available Books</h3>
 			<form id="add-book-form">
 			<table id="book-table" border="1">

@@ -37,6 +37,7 @@
 					$.ajax({
 						type: "POST",
 						url: "/checkout.json",
+						contentType: "application/json",
 						data: {
 							checkout:JSON.stringify({
 								book_id: $(checkoutbutton).data("book-id")
@@ -84,7 +85,7 @@
 						results = JSON.parse(results_json)
 						if(results.length > 0) {
 							$("#no-results-area").html("")
-							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 30%\">Title</th>\n<th style=\"width: 30%\">Author</th>\n<th style=\"width: 30%\">Publisher</th>\n<th style=\"width: 10%\">Checkout</th>\n</tr>\n\n</table>")
+							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 10%\">ID</th>\n<th style=\"width: 27%\">Title</th>\n<th style=\"width: 27%\">Author</th>\n<th style=\"width: 27%\">Publisher</th>\n<th style=\"width: 10%\">Checkout</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
 								console.log(result)
@@ -92,11 +93,11 @@
 								checkoutNode(node, result)
 								node.addClass('centered');
 								if(i%2 == 0) {
-										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["id"] +"</td>\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 										$('#search-result-table tr:last').append(node)
 								}
 								else {
-										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["id"] +"</td>\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 										$('#search-result-table tr:last').append(node);
 								}
 							}

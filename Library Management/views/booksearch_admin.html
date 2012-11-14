@@ -33,9 +33,9 @@
 				editbutton.addClass("edit-button btn btn-warning inline cboxElement")
 				editbutton.append("<i class='icon-pencil'></i>")
 				$(editbutton).data("book-id", book.id)
-			$(editbutton).data("book-title", book.title)
-			$(editbutton).data("book-author", book.author)
-			$(editbutton).data("book-publisher", book.publisher)
+				$(editbutton).data("book-title", book.title)
+				$(editbutton).data("book-author", book.author)
+				$(editbutton).data("book-publisher", book.publisher)
 				$(editbutton).click(function() {
 				console.log($(this).data('book-author'));
 					current_edit_id = $(this).data("book-id")
@@ -76,18 +76,18 @@
 						results = JSON.parse(results_json)
 						if(results.length > 0) {
 							$("#no-results-area").html("")
-							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 30%\">Title</th>\n<th style=\"width: 30%\">Author</th>\n<th style=\"width: 27%\">Publisher</th><th style=\"width: 13%\">Action</th>\n</tr>\n\n</table>")
+							$("#search-table").html("<table id=\"search-result-table\" border=\"1\">\n<tr class=\"save\">\n<th style=\"width: 10%\">ID</th>\n<th style=\"width: 27%\">Title</th>\n<th style=\"width: 27%\">Author</th>\n<th style=\"width: 27%\">Publisher</th><th style=\"width: 10%\">Action</th>\n</tr>\n\n</table>")
 							for(var i in results) {
 								var result = results[i]
 								var node = $("<td></td>")
 								buttonNode(node, result)
 								node.addClass('centered')
 								if(i%2 == 0) {
-										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"removable\">\n<td>" + result["id"] +"</td>\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 										$('#search-result-table tr:last').append(node)
 								}
 								else {
-										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
+										$("#search-result-table").append("<tr class=\"alt removable\">\n<td>" + result["id"] +"</td>\n<td>" + result["title"] +"</td>\n<td>" + result["author"][0]["name"] + "</td>\n<td>" + result["publisher"] + "</td>\n</tr>")
 										$('#search-result-table tr:last').append(node)
 								}
 							}
@@ -113,6 +113,11 @@
 					var title = $("#edittitle").val().trim()
 					var author = $("#editauthor").val().trim()
 					var publisher = $("#editpublisher").val().trim()
+					
+					$("#edittitle").val("")
+					$("#editauthor").val("")
+					$("#editpublisher").val("")
+					
 					if(title.length == 0 || author.length == 0 || publisher.length == 0) {
 						$("#colorbox-error-area").html("All fields must have non-whitespace characters")
 						setTimeout(function() {
@@ -121,10 +126,6 @@
 						}
 						else {
 							$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-							$("#edittitle").val("")
-							$("#editauthor").val("")
-							$("#editpublisher").val("")
 
 							$.ajax({
 								type: "PUT",

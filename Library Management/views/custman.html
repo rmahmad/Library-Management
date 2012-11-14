@@ -92,6 +92,10 @@
 			else {
 				var firstname = $("#editfirstname").val().trim()
 				var lastname = $("#editlastname").val().trim()
+				
+				$("#editfirstname").val("")
+				$("#editlastname").val("")
+				
 				if(firstname.length == 0 || lastname.length == 0) {
 					$("#colorbox-error-area").html("All fields must have non-whitespace characters")
 					setTimeout(function() {
@@ -100,9 +104,6 @@
 					}
 					else {
 						$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-						$("#editfirstname").val("")
-						$("#editlastname").val("")
 
 						$.ajax({
 							type: "PUT",

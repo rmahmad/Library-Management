@@ -344,22 +344,26 @@ end
 
 get '/customer/profile.json' do
 	customer = Customer.get(session["user_id"])
-	fullname = customer.firstname + " " + customer.lastname
-	data = Hash["name", fullname]
-	checkouts = customer.checkouts
-	checkouts_data = []
-	currentdate = Date.new
-	for checkout in checkouts  do
-		overdue = checkout.returndate < Date.today
-		puts checkout.inspect
-		if(checkout.current)
-			checkouts_data << Hash["Book", checkout.book.title, "ID", checkout.id, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate, "overdue", overdue]
+	if(customer) do
+		fullname = customer.firstname + " " + customer.lastname
+		data = Hash["name", fullname]
+		checkouts = customer.checkouts
+		checkouts_data = []
+		currentdate = Date.new
+		for checkout in checkouts  do
+			overdue = checkout.returndate < Date.today
+			puts checkout.inspect
+			if(checkout.current)
+				checkouts_data << Hash["Book", checkout.book.title, "ID", checkout.id, "Author", checkout.book.authors, "Publisher", checkout.book.publisher, "Return date", checkout.returndate, "overdue", overdue]
+			end
 		end
-	end
 
-	data["checkouts"] = checkouts_data
-	puts "data: #{data.inspect}"
-	data.to_json
+		data["checkouts"] = checkouts_data
+		puts "data: #{data.inspect}"
+		data.to_json
+	else
+		[500, "Error retrieving information. Please try again later, or in a different browser"]
+	end
 end
 
 put '/customer/:id.json' do
@@ -483,7 +487,7 @@ post '/booksearch.json' do
 	if(id && id != 0)
 		book = Book.get(id)
 		if(book)
-			if((title == "" || title == book.title) && (publisher == "" || publisher == book.publisher) && (author_name == nil || book.authors.include?(author_name)) || (title == "" && publisher == "" && author_name == ""))
+			if((title == "" || title == book.title) && (publisher == "" || publisher == book.publisher) && (author_name == "" || book.authors[0].name == author_name) || (title == "" && publisher == "" && author_name == ""))
 				query << book
 			end
 		end
