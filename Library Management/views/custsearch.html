@@ -56,13 +56,17 @@
 							for(var i in results) {
 								var result = results[i]
 								var node = $("<td></td>")
-								
+								node.addClass('centered');
 								var editbutton = $("<button></button>")
 								editbutton.addClass("edit-button btn btn-warning inline cboxElement")
 								editbutton.append("<i class='icon-pencil'></i>")
 								$(editbutton).data("cust-id", result.id)
+								$(editbutton).data('cust-firstname', result.firstname)
+								$(editbutton).data('cust-lastname', result.lastname)
 								$(editbutton).click(function() {
 									current_edit_id = $(this).data("cust-id")
+									$('#editfirstname').val($(this).data('cust-firstname'));
+									$('#editlastname').val($(this).data('cust-lastname'));
 								})
 								var deletebutton = $("<button></button>")
 								deletebutton.addClass("delete-button btn btn-danger")

@@ -9,7 +9,7 @@
 	$(document).ready(function() {
 		
 		var current_edit_id = 0;
-		
+
 		function addcolorbox() {
 			$(".inline").colorbox({inline:true, width:"50%", height:"60%", href: "#inline_content"});
 		}
@@ -18,9 +18,16 @@
 			var editbutton = $("<button></button>")
 			editbutton.addClass("edit-button btn btn-warning inline cboxElement")
 			editbutton.append("<i class='icon-pencil'></i>")
+			console.log(book);
 			$(editbutton).data("book-id", book.id)
+			$(editbutton).data("book-title", book.title)
+			$(editbutton).data("book-author", book.author)
+			$(editbutton).data("book-publisher", book.publisher)
 			$(editbutton).click(function() {
 				current_edit_id = $(this).data("book-id")
+				$('#edittitle').val($(this).data('book-title'))
+				$('#editauthor').val($(this).data('book-author'))
+				$('#editpublisher').val($(this).data('book-publisher'))
 			})
 			var deletebutton = $("<button></button>")
 			deletebutton.addClass("delete-button btn btn-danger")

@@ -33,8 +33,15 @@
 				editbutton.addClass("edit-button btn btn-warning inline cboxElement")
 				editbutton.append("<i class='icon-pencil'></i>")
 				$(editbutton).data("book-id", book.id)
+			$(editbutton).data("book-title", book.title)
+			$(editbutton).data("book-author", book.author)
+			$(editbutton).data("book-publisher", book.publisher)
 				$(editbutton).click(function() {
+				console.log($(this).data('book-author'));
 					current_edit_id = $(this).data("book-id")
+				$('#edittitle').val($(this).data('book-title'))
+				$('#editauthor').val($(this).data('book-author')[0].name)
+				$('#editpublisher').val($(this).data('book-publisher'))
 				})
 				var deletebutton = $("<button></button>")
 				deletebutton.addClass("delete-button btn btn-danger")
