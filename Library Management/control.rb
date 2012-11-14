@@ -427,7 +427,6 @@ post '/checkout.json' do
 			[500, {"error" => "There was an error!"}]
 		end
 	else
-		puts "i'm here!"
 		[500, "Book is already checked out."]
 	end
 end
