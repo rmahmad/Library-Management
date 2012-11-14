@@ -101,29 +101,37 @@
 					}, 3000)
 				}
 				else {
-					var firstname = $("#editfirstname").val()
-					var lastname = $("#editlastname").val()
-					$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-					$("#editfirstname").val("")
-					$("#editlastname").val("")
-
-					$.ajax({
-						type: "PUT",
-						url: "/customer/" + current_edit_id +".json",
-						data: {
-							firstname: firstname,
-							lastname: lastname
-						},
-						success: function() {
-							$("#colorbox-msg-area").html("")
-							$.colorbox.close()
-							updateTable()
-						},
-						error: function() {
+					var firstname = $("#editfirstname").val().trim()
+					var lastname = $("#editlastname").val().trim()
+					if(firstname.length == 0 || lastname.length == 0) {
+						$("#colorbox-error-area").html("All fields must have non-whitespace characters")
+						setTimeout(function() {
+							$("#colorbox-error-area").html("")
+							}, 3000)
 						}
-					})
-				}
+						else {
+							$("#colorbox-msg-area").html("Please wait, Updating records...")
+
+							$("#editfirstname").val("")
+							$("#editlastname").val("")
+
+							$.ajax({
+								type: "PUT",
+								url: "/customer/" + current_edit_id +".json",
+								data: {
+									firstname: firstname,
+									lastname: lastname
+								},
+								success: function() {
+									$("#colorbox-msg-area").html("")
+									$.colorbox.close()
+									updateTable()
+								},
+								error: function() {
+								}
+							})
+						}
+					}
 				return false;
 			})
 

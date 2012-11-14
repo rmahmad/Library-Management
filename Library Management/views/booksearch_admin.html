@@ -96,7 +96,6 @@
 			})
 			
 			$("#edit-book-form").submit(function() {
-				console.log("poop")
 				if($("#edittitle").val() == "" || $("#editauthor").val() == "" || $("#editpublisher").val() == "") {
 					$("#colorbox-error-area").html("No fields can be blank")
 					setTimeout(function() {
@@ -104,32 +103,40 @@
 					}, 3000)
 				}
 				else {
-					var title = $("#edittitle").val()
-					var author = $("#editauthor").val()
-					var publisher = $("#editpublisher").val()
-					$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-					$("#edittitle").val("")
-					$("#editauthor").val("")
-					$("#editpublisher").val("")
-
-					$.ajax({
-						type: "PUT",
-						url: "/book/" + current_edit_id +".json",
-						data: {
-							title: title,
-							author: author,
-							publisher: publisher
-						},
-						success: function() {
-							$("#colorbox-msg-area").html("")
-							$.colorbox.close()
-							$("#book-search-form").submit()
-						},
-						error: function() {
+					var title = $("#edittitle").val().trim()
+					var author = $("#editauthor").val().trim()
+					var publisher = $("#editpublisher").val().trim()
+					if(title.length == 0 || author.length == 0 || publisher.length == 0) {
+						$("#colorbox-error-area").html("All fields must have non-whitespace characters")
+						setTimeout(function() {
+							$("#colorbox-error-area").html("")
+							}, 3000)
 						}
-					})
-				}
+						else {
+							$("#colorbox-msg-area").html("Please wait, Updating records...")
+
+							$("#edittitle").val("")
+							$("#editauthor").val("")
+							$("#editpublisher").val("")
+
+							$.ajax({
+								type: "PUT",
+								url: "/book/" + current_edit_id +".json",
+								data: {
+									title: title,
+									author: author,
+									publisher: publisher
+								},
+								success: function() {
+									$("#colorbox-msg-area").html("")
+									$.colorbox.close()
+									$("#book-search-form").submit()
+								},
+								error: function() {
+								}
+							})
+						}
+					}
 				return false;
 			})
 			
@@ -184,7 +191,7 @@
 				<input type="text" placeholder="Book title" class="colorbox-element" id="edittitle" style = "width: 95%; margin-bottom: 0px">
 				<input type="text" placeholder="Book author" class="colorbox-element" id="editauthor" style = "width: 95%; margin-bottom: 0px">
 				<input type="text" placeholder="Book publisher" class="colorbox-element" id="editpublisher" style = "width: 95%; margin-bottom: 0px">
-				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%; margin: auto" value="Edit Book">
+				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%" value="Edit Book">
 				<div id="colorbox-msg-area"></div>
 				<div id="colorbox-error-area"></div>
 			</form>

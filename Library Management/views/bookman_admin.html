@@ -139,31 +139,39 @@
 					}, 3000)
 				}
 				else {
-					var title = $("#edittitle").val()
-					var author = $("#editauthor").val()
-					var publisher = $("#editpublisher").val()
-					$("#colorbox-msg-area").html("Please wait, Updating records...")
+					var title = $("#edittitle").val().trim()
+					var author = $("#editauthor").val().trim()
+					var publisher = $("#editpublisher").val().trim()
+					if(title.length == 0 || author.length == 0 || publisher.length == 0) {
+						$("#colorbox-error-area").html("All fields must have non-whitespace characters")
+						setTimeout(function() {
+							$("#colorbox-error-area").html("")
+						}, 3000)
+					}
+					else {
+						$("#colorbox-msg-area").html("Please wait, Updating records...")
 
-					$("#edittitle").val("")
-					$("#editauthor").val("")
-					$("#editpublisher").val("")
+						$("#edittitle").val("")
+						$("#editauthor").val("")
+						$("#editpublisher").val("")
 
-					$.ajax({
-						type: "PUT",
-						url: "/book/" + current_edit_id +".json",
-						data: {
-							title: title,
-							author: author,
-							publisher: publisher
-						},
-						success: function() {
-							$("#colorbox-msg-area").html("")
-							$.colorbox.close()
-							updateTable()
-						},
-						error: function() {
-						}
-					})
+						$.ajax({
+							type: "PUT",
+							url: "/book/" + current_edit_id +".json",
+							data: {
+								title: title,
+								author: author,
+								publisher: publisher
+							},
+							success: function() {
+								$("#colorbox-msg-area").html("")
+								$.colorbox.close()
+								updateTable()
+							},
+							error: function() {
+							}
+						})
+					}
 				}
 				return false;
 			})

@@ -85,29 +85,37 @@
 				}, 3000)
 			}
 			else {
-				var firstname = $("#editfirstname").val()
-				var lastname = $("#editlastname").val()
-				$("#colorbox-msg-area").html("Please wait, Updating records...")
-
-				$("#editfirstname").val("")
-				$("#editlastname").val("")
-
-				$.ajax({
-					type: "PUT",
-					url: "/customer/" + current_edit_id +".json",
-					data: {
-						firstname: firstname,
-						lastname: lastname
-					},
-					success: function() {
-						$("#colorbox-msg-area").html("")
-						$.colorbox.close()
-						updateTable()
-					},
-					error: function() {
+				var firstname = $("#editfirstname").val().trim()
+				var lastname = $("#editlastname").val().trim()
+				if(firstname.length == 0 || lastname.length == 0) {
+					$("#colorbox-error-area").html("All fields must have non-whitespace characters")
+					setTimeout(function() {
+						$("#colorbox-error-area").html("")
+						}, 3000)
 					}
-				})
-			}
+					else {
+						$("#colorbox-msg-area").html("Please wait, Updating records...")
+
+						$("#editfirstname").val("")
+						$("#editlastname").val("")
+
+						$.ajax({
+							type: "PUT",
+							url: "/customer/" + current_edit_id +".json",
+							data: {
+								firstname: firstname,
+								lastname: lastname
+							},
+							success: function() {
+								$("#colorbox-msg-area").html("")
+								$.colorbox.close()
+								updateTable()
+							},
+							error: function() {
+							}
+						})
+					}
+				}
 			return false;
 		})
 
@@ -157,7 +165,7 @@
 			<form id="edit-cust-form" class="colorbox-form">
 				<input type="text" placeholder="First name" class="colorbox-element" id="editfirstname" style = "width: 95%; margin-bottom: 0px">
 				<input type="text" placeholder="Last name" class="colorbox-element" id="editlastname" style = "width: 95%; margin-bottom: 0px">
-				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%; margin: auto" value="Edit Customer">
+				<input type="submit" id="edit-btn" class="btn-primary colorbox-element" style="width: 20%" value="Edit Customer">
 				<div id="colorbox-msg-area"></div>
 				<div id="colorbox-error-area"></div>
 			</form>

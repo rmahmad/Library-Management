@@ -72,8 +72,6 @@
 				$.ajax({
 					type: "POST",
 					url: "/booksearch.json",
-					contentType: "application/json",
-					cache: false,
 					data: {
 						search:JSON.stringify({
 							book_id: book_id,
