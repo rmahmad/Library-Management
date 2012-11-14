@@ -25,6 +25,7 @@
 				<% if(session['registration_error']) %>
 				<div id="error-message"><b><%= session['registration_error'] %></b></div>
 				<% end %>
+				<% session['registration_error'] = false; %>
 				<form id="register-form" method="post" action="/views/register.html"><br>
 				<div id="reg-username-div">
 					<label for="username-field" id= "reg-username-title">User Name</label>
